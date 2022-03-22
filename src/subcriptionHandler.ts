@@ -59,6 +59,7 @@ class SubscriptionHandler {
         console.log("client is disconnecting");
         this.client = null;
         conn?.close();
+        this.onClientReleased(this);
       }, 10000);
     }
   }
@@ -203,6 +204,7 @@ class SubscriptionHandler {
   onDisconnected() {
     console.log(`Disconnected from ${this.url}`);
   }
+  onClientReleased(arg0: this) {}
 }
 
 export { SubscriptionHandler };
