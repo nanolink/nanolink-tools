@@ -101,8 +101,8 @@ class SubscriptionHandler {
         while (!done) {
           if (pending.length > 0) {
             let e = pending.shift();
-            if (e.error) {
-              throw e.error;
+            if (e.errors) {
+              throw e.errors[0].message;
             } else {
               return { value: e.data, done: false };
             }
@@ -130,6 +130,25 @@ class SubscriptionHandler {
           self.releaseClient();
         }
         return { done: true, value: null };
+      },
+    };
+  }
+
+  unwrap(iterator: any, map: (p: any) => any) {
+    return {
+      [Symbol.asyncIterator]() {
+        return this;
+      },
+      async next() {
+        let r = await iterator.next();
+        if (r.done) {
+          return { done: true };
+        } else {
+          return { value: map(r.value) };
+        }
+      },
+      return() {
+        return iterator.return();
       },
     };
   }

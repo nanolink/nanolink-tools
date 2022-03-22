@@ -67,7 +67,7 @@ export class Connection {
         (n) => n[Object.keys(n)[0]]
       );
     } else {
-      return iter;
+      return this.subscriptionHandler.unwrap(iter, (n) => n[Object.keys(n)[0]]);
     }
   }
   async subscribelog(query: string, variables?: any, unwind?: boolean) {
@@ -81,10 +81,13 @@ export class Connection {
         (n) => n[Object.keys(n)[0]]
       );
     } else {
-      return iter;
+      return this.logSubscriptionHandler.unwrap(
+        iter,
+        (n) => n[Object.keys(n)[0]]
+      );
     }
   }
-  getMirror(name: string): Promise<Map<string, any>> {
+  async getMirror(name: string): Promise<Map<string, any>> {
     if (!this.subscriptionHandler) {
       throw "Subscription handler not initialize (connect not called)";
     }
@@ -96,10 +99,10 @@ export class Connection {
       if (query) {
         let newMirror = new Mirror(name, query, this.subscriptionHandler);
         this.mirrors.set(name, newMirror);
-        this.onMirrorCreated(newMirror);
+        await this.onMirrorCreated(newMirror);
         return newMirror.load();
       } else {
-        return Promise.reject("Mirror query does not exist");
+        throw "Mirror query does not exist";
       }
     }
   }
@@ -141,7 +144,9 @@ export class Connection {
   }
   onDisconnected(): void {}
   onConnected(): void {}
-  onMirrorCreated(mirror: Mirror): void {}
+  onMirrorCreated(mirror: Mirror): Promise<any> {
+    return Promise.resolve();
+  }
   onReady(): void {}
   onConnectedLog(): void {}
   onDisconnectedInternalLog(): void {
