@@ -17,15 +17,22 @@ export class Connection {
   queryHandler: QueryHandler;
   mirrors: Map<string, Mirror> = new Map<string, Mirror>();
   isclosing: boolean = false;
+  islogclosing: boolean = false;
+  logAutoReconnect: boolean = false;
+  autoReconnect: boolean = false;
 
   constructor(url: string, apiToken: string) {
     this.queryHandler = new QueryHandler(url, apiToken);
   }
 
-  async connectLog() {
+  async connectLog(autoReconnect?: boolean) {
     if (!this.queryHandler.logServerUrl || !this.queryHandler.token) {
       throw "Needs to login to coreserver before connecting to the logserver";
     }
+    if (this.logSubscriptionHandler) {
+      throw "Log is already connected";
+    }
+    this.logAutoReconnect = autoReconnect ?? true;
     this.logSubscriptionHandler = new SubscriptionHandler(
       `${this.queryHandler.logServerUrl
         .replace(/^http/, "ws")
@@ -38,12 +45,16 @@ export class Connection {
     this.logSubscriptionHandler.onConnected = this.onConnectedLog;
     this.onLogReady();
   }
-  async connect() {
+  async connect(autoReconnect?: boolean) {
+    if (this.subscriptionHandler) {
+      throw "Is already connected";
+    }
     this.isclosing = false;
     await this.queryHandler.login();
     if (!this.queryHandler.token) {
       throw "Needs to login to coreserver before connecting to the logserver";
     }
+    this.autoReconnect = autoReconnect ?? true;
     this.subscriptionHandler = new SubscriptionHandler(
       `${this.queryHandler.url
         .replace(/^http/, "ws")
@@ -126,11 +137,16 @@ export class Connection {
     }
   }
   close() {
-    this.isclosing = false;
+    this.isclosing = true;
     for (let m of this.mirrors.values()) {
       m.close();
     }
     this.mirrors = new Map<string, Mirror>();
+    this.subscriptionHandler = undefined;
+  }
+  closelog() {
+    this.islogclosing = true;
+    this.logSubscriptionHandler = undefined;
   }
 
   callbackTo(f: (...p: any[]) => any): (...p: any) => any {
@@ -138,8 +154,11 @@ export class Connection {
   }
   private onDisconnectedInternal(): void {
     this.onDisconnected();
-    if (this.isclosing) {
-      setTimeout(() => this.connect(), 5000);
+    if (!this.isclosing && this.autoReconnect) {
+      setTimeout(() => {
+        this.subscriptionHandler = undefined;
+        this.connect();
+      }, 5000);
     }
   }
   onDisconnected(): void {}
@@ -151,7 +170,12 @@ export class Connection {
   onConnectedLog(): void {}
   onDisconnectedInternalLog(): void {
     this.onDisconnectedLog();
-    setTimeout(() => this.connectLog(), 5000);
+    if (!this.islogclosing && this.logAutoReconnect) {
+      setTimeout(() => {
+        this.logSubscriptionHandler = undefined;
+        this.connectLog();
+      }, 5000);
+    }
   }
   onDisconnectedLog(): void {}
   onLogReady(): void {}

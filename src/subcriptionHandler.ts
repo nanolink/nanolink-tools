@@ -18,8 +18,9 @@ class SubscriptionHandler {
   private async createClient(): Promise<SubscriptionClient> {
     let retVal = deferedPromise<SubscriptionClient>();
     if (this.client) {
-      if (this.timeout == 0) {
+      if (this.timeout) {
         clearInterval(this.timeout);
+        this.timeout = null;
       }
       this.refcount = this.refcount + 1;
       return this.client;
@@ -51,12 +52,11 @@ class SubscriptionHandler {
     return retVal;
   }
   private releaseClient() {
-    console.log("client release", this.refcount);
     let conn = this.client;
     this.refcount = this.refcount - 1;
     if (this.refcount == 0) {
       this.timeout = setTimeout(() => {
-        console.log("client is disconnecting");
+        this.timeout = null;
         this.client = null;
         conn?.close();
         this.onClientReleased(this);
