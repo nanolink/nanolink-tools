@@ -50,9 +50,14 @@ export class Connection {
       throw "Is already connected";
     }
     this.isclosing = false;
-    await this.queryHandler.login();
+    try {
+      await this.queryHandler.login();
+    } catch (error) {
+      this.onDisconnectedInternal();
+      return;
+    }
     if (!this.queryHandler.token) {
-      throw "Needs to login to coreserver before connecting to the logserver";
+      throw "Failed login to coreserver";
     }
     this.autoReconnect = autoReconnect ?? true;
     this.subscriptionHandler = new SubscriptionHandler(
