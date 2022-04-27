@@ -3,6 +3,7 @@ import { Mirror } from "./mirror";
 import { QueryHandler } from "./queryHandler";
 import { SubscriptionHandler } from "./subcriptionHandler";
 import { initWs } from "./js/initWs";
+import { deferedPromise, DeferedPromise } from "./deferredPromise";
 
 /**
  * Make websocket available for 'SubscriptionClient'
@@ -45,21 +46,37 @@ export class Connection {
     this.logSubscriptionHandler.onConnected = this.onConnectedLog;
     this.onLogReady();
   }
+  private dologin(p: DeferedPromise<void>): void {
+    this.queryHandler
+      .login()
+      .then(() => {
+        p.resolve();
+      })
+      .catch((error) => {
+        if (this.autoReconnect) {
+          if (this.isclosing) {
+            setTimeout(() => this.dologin(p), 5000);
+          } else {
+            p.reject(error);
+          }
+        }
+      });
+  }
+  private login(): DeferedPromise<void> {
+    let retVal = deferedPromise<void>();
+    this.dologin(retVal);
+    return retVal;
+  }
   async connect(autoReconnect?: boolean) {
     if (this.subscriptionHandler) {
       throw "Is already connected";
     }
     this.isclosing = false;
-    try {
-      await this.queryHandler.login();
-    } catch (error) {
-      this.onDisconnectedInternal();
-      return;
-    }
+    this.autoReconnect = autoReconnect ?? true;
+    await this.login();
     if (!this.queryHandler.token) {
       throw "Failed login to coreserver";
     }
-    this.autoReconnect = autoReconnect ?? true;
     this.subscriptionHandler = new SubscriptionHandler(
       `${this.queryHandler.url
         .replace(/^http/, "ws")
