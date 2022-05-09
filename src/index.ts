@@ -54,7 +54,7 @@ export class Connection {
       })
       .catch((error) => {
         if (this.autoReconnect) {
-          if (this.isclosing) {
+          if (!this.isclosing) {
             setTimeout(() => this.dologin(p), 5000);
           } else {
             p.reject(error);
