@@ -1,5 +1,6 @@
 import { SubscriptionHandler } from "./subcriptionHandler";
 import { deferedPromise } from "./deferredPromise";
+import EventEmitter from "events";
 
 const SyncType = {
   DELETED: "DELETED",
@@ -18,6 +19,7 @@ export class Mirror {
   name: string;
   query: string;
   version: number = -1;
+  emmitter: EventEmitter;
   protected currentIterator: any;
   /**
    *
@@ -29,6 +31,7 @@ export class Mirror {
     this.name = name;
     this.query = query;
     this.handler = handler;
+    this.emmitter = new EventEmitter();
   }
 
   private processRecord(record: any) {
@@ -40,13 +43,16 @@ export class Mirror {
       if (orgdoc) {
         this.storage.delete(orgdoc.id);
         this.onDeleted(this, orgdoc);
+        this.emmitter.emit("deleted", this, orgdoc);
       }
     } else {
       this.storage.set(record.id, record);
       if (orgdoc) {
         this.onUpdated(this, record, orgdoc);
+        this.emmitter.emit("updated", this, record, orgdoc);
       } else {
         this.onInserted(this, record);
+        this.emmitter.emit("inserted", this, record);
       }
     }
   }
@@ -82,6 +88,7 @@ export class Mirror {
               this.storage.delete(record.deleteId);
               if (orgdoc) {
                 this.onDeleted(this, orgdoc);
+                this.emmitter.emit("deleted", this, orgdoc);
               }
               break;
             }
