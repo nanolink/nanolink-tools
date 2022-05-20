@@ -1,5 +1,6 @@
 import { SubscriptionClient } from "graphql-subscriptions-client";
 import { deferedPromise, DeferedPromise } from "./deferredPromise";
+import EventEmitter from "events";
 
 class SubscriptionHandler {
   url: string;
@@ -7,12 +8,14 @@ class SubscriptionHandler {
   refcount: number;
   authToken: string;
   timeout: any;
+  emmitter: EventEmitter;
 
   constructor(url: string, authToken: string) {
     this.url = url;
     this.authToken = authToken;
     this.client = null;
     this.refcount = 0;
+    this.emmitter = new EventEmitter();
   }
 
   private async createClient(): Promise<SubscriptionClient> {
@@ -42,13 +45,13 @@ class SubscriptionHandler {
       "disconnected",
       () => {
         retVal.reject(`Connection timout to: ${this.url}`);
-        this.onDisconnected();
+        this.onDisconnectedInternal();
       },
       this
     );
     this.refcount = 1;
     this.client = client;
-    this.onConnected();
+    this.onConnectedInternal();
     return retVal;
   }
   private releaseClient() {
@@ -59,7 +62,7 @@ class SubscriptionHandler {
         this.timeout = null;
         this.client = null;
         conn?.close();
-        this.onClientReleased(this);
+        this.onClientReleasedInternal(this);
       }, 10000);
     }
   }
@@ -198,11 +201,23 @@ class SubscriptionHandler {
     };
   }
 
+  private onConnectedInternal() {
+    this.onConnected();
+    this.emmitter.emit("connected");
+  }
   onConnected() {
     console.log(`Connected to ${this.url}`);
   }
+  private onDisconnectedInternal() {
+    this.onDisconnected();
+    this.emmitter.emit("disconnected");
+  }
   onDisconnected() {
     console.log(`Disconnected from ${this.url}`);
+  }
+  private onClientReleasedInternal(arg0: this) {
+    this.onClientReleased(arg0);
+    this.emmitter.emit("clientreleased", arg0);
   }
   onClientReleased(arg0: this) {}
 }
