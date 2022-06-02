@@ -128,7 +128,7 @@ export class Connection {
     if (mirror) {
       return Promise.resolve(mirror.storage);
     } else {
-      let query = Subscriptions.get(name);
+      let query = Subscriptions[name];
       if (query) {
         let newMirror = new Mirror(name, query, this.subscriptionHandler);
         this.mirrors.set(name, newMirror);
@@ -150,7 +150,7 @@ export class Connection {
     if (!this.subscriptionHandler) {
       throw "Subscription handler not initialize (connect not called)";
     }
-    let query = TempSubscriptions.get(name);
+    let query = TempSubscriptions[name];
     if (query) {
       let mirror = new Mirror(name, query, this.subscriptionHandler);
       return mirror.load();
