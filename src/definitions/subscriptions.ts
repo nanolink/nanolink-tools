@@ -5,7 +5,7 @@ const serviceDataCommonFields = `id createdDateTime servicePlanId userId lastLog
 const mCommonFields = "type total deleteId deleteVersion";
 const mServiceCommonFields = `name description createdDate createdBy ${commonFields}`;
 
-const _subscriptions = {
+const Subscriptions: any = {
   references: `
       subscription References($version:Int!) {
           mreference_getbulk(version: $version, subscribe:true)
@@ -280,7 +280,7 @@ const _subscriptions = {
       }  
     }`,
 };
-const _tempSubscriptions = {
+const TempSubscriptions: any = {
   linkconnected: `subscription linkconnected {
         otrackers_linkconnectedbulk(subscribe: true, includeInitial: true) {
           type
@@ -376,12 +376,5 @@ const _tempSubscriptions = {
   }
   `,
 };
-
-const Subscriptions: Map<string, string> = new Map<string, string>(
-  Object.entries(_subscriptions)
-);
-const TempSubscriptions: Map<string, string> = new Map<string, string>(
-  Object.entries(_tempSubscriptions)
-);
 
 export { Subscriptions, TempSubscriptions };

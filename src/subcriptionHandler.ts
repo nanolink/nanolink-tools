@@ -8,14 +8,14 @@ class SubscriptionHandler {
   refcount: number;
   authToken: string;
   timeout: any;
-  emmitter: EventEmitter;
+  emitter: EventEmitter;
 
   constructor(url: string, authToken: string) {
     this.url = url;
     this.authToken = authToken;
     this.client = null;
     this.refcount = 0;
-    this.emmitter = new EventEmitter();
+    this.emitter = new EventEmitter();
   }
 
   private async createClient(): Promise<SubscriptionClient> {
@@ -203,21 +203,21 @@ class SubscriptionHandler {
 
   private onConnectedInternal() {
     this.onConnected();
-    this.emmitter.emit("connected");
+    this.emitter.emit("connected");
   }
   onConnected() {
     console.log(`Connected to ${this.url}`);
   }
   private onDisconnectedInternal() {
     this.onDisconnected();
-    this.emmitter.emit("disconnected");
+    this.emitter.emit("disconnected");
   }
   onDisconnected() {
     console.log(`Disconnected from ${this.url}`);
   }
   private onClientReleasedInternal(arg0: this) {
     this.onClientReleased(arg0);
-    this.emmitter.emit("clientreleased", arg0);
+    this.emitter.emit("clientreleased", arg0);
   }
   onClientReleased(arg0: this) {}
 }
