@@ -16,6 +16,7 @@ const DoubleFields: any = {
   INTERNAL_VOLTAGE: "INTERNAL_VOLTAGE",
   INITIAL_ODOMETER: "INITIAL_ODOMETER",
   CALCULATED_ODOMETER: "CALCULATED_ODOMETER",
+  BATTERY_PERCENT: "BATTERY_PERCENT",
 };
 class StatesReceiverDouble {
   connection: Connection;
