@@ -46,6 +46,9 @@ class TripReceiver {
           this.onDataReceived(curTrip);
           curTrip = null;
         }
+        if (r.type == "DONE") {
+          this.onInitialReceived();
+        }
       } else if (r.data) {
         if (r.data.__typename == "QTrip") {
           if (curTrip) {
@@ -72,6 +75,7 @@ class TripReceiver {
       }
     }
   }
+  onInitialReceived() {}
   makecopy_notype(o: any) {
     let retVal: any = new Object();
     Object.assign(retVal, o);

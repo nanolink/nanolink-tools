@@ -23,9 +23,14 @@ class TagPositionReceiver {
     for await (let r of iter) {
       if (r.data) {
         this.onDataReceived(r.data);
+      } else {
+        if (r.type == "DONE") {
+          this.onInitialReceived();
+        }
       }
     }
   }
+  onInitialReceived() {}
   /**
    *
    * @param {any | [any]} data - Set this callback to receive data.
