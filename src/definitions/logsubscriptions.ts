@@ -226,5 +226,25 @@ const LogSubscriptions = {
       }
     `;
   },
+  gpsLog: `
+    subscription gpsLog($from: ObjectId, $startFrom: DateTime) {
+      gps_position(filter: { cursor: { from: $from }, start: $startFrom }, subscribe: true, includeInitial: true) {
+        type
+        data {
+          createdTime
+          trackerVID
+          stamp
+          longitude
+          latitude
+          altitude
+          speed
+          bearing
+          accuracy
+          gEOHash
+          id
+        }
+      }
+    }  
+  `,
 };
 export { LogSubscriptions };
