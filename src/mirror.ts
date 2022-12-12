@@ -19,6 +19,7 @@ export class Mirror {
   name: string;
   query: string;
   version: number = -1;
+  opVersion?: string;
   emitter: EventEmitter;
   protected currentIterator: any;
   /**
@@ -32,9 +33,14 @@ export class Mirror {
     this.query = query;
     this.handler = handler;
     this.emitter = new EventEmitter();
+    this.opVersion = undefined;
   }
 
   private processRecord(record: any) {
+    if (record.opVersion && (!this.opVersion || record.opVersion > this.opVersion))
+    {
+      this.opVersion = record.opVersion;
+    }
     if (record.version > this.version) {
       this.version = record.version;
     }
@@ -60,7 +66,7 @@ export class Mirror {
   loadInternal(): Promise<any> {
     let initPromise = deferedPromise();
     this.handler
-      .subscribe(this.query, { version: this.version })
+      .subscribe(this.query, { version: this.version, opVersion: this.opVersion })
       .then(async (iterator) => {
         this.currentIterator = iterator;
         for await (let msg of iterator) {
@@ -81,6 +87,10 @@ export class Mirror {
               initPromise.reject("VERSIONERROR");
             }
             case SyncType.DELETED: {
+              if (record.deleteOpVersion && (!this.opVersion || record.deleteOpVersion > this.opVersion))
+              {
+                this.opVersion = record.deleteOpVersion;
+              }
               if (record.deleteVersion > this.version) {
                 this.version = record.deleteVersion;
               }

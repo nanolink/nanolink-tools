@@ -166,9 +166,9 @@ const Subscriptions: any = {
      }
   `,
   trackerLinks: `
-     subscription BLELinks($version: Int!)
+     subscription BLELinks($opVersion: String)
      {
-         otrackers_getlinks(version: $version, subscribe: true)
+         otrackers_getlinks(opversion: $opVersion, subscribe: true)
          {
              ${mCommonFields}
              data {
@@ -183,9 +183,9 @@ const Subscriptions: any = {
      }
   `,
   referenceLinks: `
-     subscription ReferenceLink($version: Int!)
+     subscription ReferenceLink($version: Int!, $opVersion: String)
      {
-          oreference_getlinks(version: $version, subscribe: true)
+          oreference_getlinks(version: $version, opVersion: $opVersion, subscribe: true)
           {
               ${mCommonFields}
               data {
