@@ -35,6 +35,8 @@ const Subscriptions: any = {
                           ... on QMServiceDataTrackerStateDouble { ${serviceDataCommonFields} dueSlackKM : dueSlack nextDueKM : nextDue trackerVID }
                       }
                       deleted
+                      externalKeys
+                      externalBag
                   }
                   ... on QMAsset { 
                       ${commonFields}
@@ -56,6 +58,8 @@ const Subscriptions: any = {
                           ... on QMServiceDataTrackerStateDouble { ${serviceDataCommonFields} dueSlackKM : dueSlack nextDueKM : nextDue trackerVID }
                       }
                       deleted
+                      externalKeys
+                      externalBag
                   }
                   ... on QMSite { 
                       ${commonFields}
@@ -77,6 +81,8 @@ const Subscriptions: any = {
                           ... on QMServiceDataTrackerStateDouble { ${serviceDataCommonFields} dueSlackKM : dueSlack nextDueKM : nextDue trackerVID }
                       }
                       deleted
+                      externalKeys
+                      externalBag
               }
           }                
       }
