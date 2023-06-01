@@ -1,3 +1,9 @@
+/**
+ * Definition of state subscription on the core server
+ * @date 6/1/2023 - 12:39:39 PM
+ *
+ * @type {{ transmitterLinks(includeLinks?: boolean, includeNewest?: boolean, includeNearest?: boolean, includeNewestByTrackerType?: boolean, includeNewestByReferenceType?: boolean): string; ... 6 more ...; statesAny: string; }}
+ */
 const StateSubscriptions = {
   transmitterLinks(
     includeLinks?: boolean,

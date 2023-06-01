@@ -2,12 +2,26 @@ import { Connection } from "../index";
 import { LogSubscriptions } from "../definitions/logsubscriptions";
 
 /**
- * Log data containing all information about a historic link
+ * Subscription to log data containing all information about a historic link
+ * @date 6/1/2023 - 8:14:25 AM
+ *
+ * @class LogLinksReceiver
  */
-
 class LogLinksReceiver {
+  /**
+   * Core and log connection object
+   * @date 6/1/2023 - 8:08:13 AM
+   *
+   * @type {Connection}
+   */
   connection: Connection;
 
+  /**
+   * Subscription variables
+   * @date 6/1/2023 - 8:08:13 AM
+   *
+   * @type {{ subscribe: boolean; includeInitial: boolean; includeGPS: boolean; includeRSSI: boolean; includeTrackerReference: boolean; excludeNullGPS: boolean; filter: { receiver: string; transmitter: string; trackers: {}; start: string; end: string; cursor: { ...; }; }; }}
+   */
   variables = {
     subscribe: false,
     includeInitial: false,
@@ -28,6 +42,26 @@ class LogLinksReceiver {
     },
   };
 
+  /**
+   * Create a subscription to the link compound receiver
+   * @date 6/1/2023 - 8:08:13 AM
+   *
+   * @constructor
+   * @param {Connection} connection - The connection handler
+   * @param {boolean} subscribe - Keep the subscription running, otherwise stops when initialData is received
+   * @param {boolean} includeInitial - Include initial data
+   * @param {boolean} includeGPS - Include GPS information for the link
+   * @param {boolean} includeRSSI - Include RSSI (Received signal strengh indicator) for the link
+   * @param {boolean} includeTrackerReference - Include the trackers reference (Where it is attatched)
+   * @param {boolean} excludeNullGPS - Don't return null GPS (Where the receiver reported i could not get a GPS fix)
+   * @param {string} receiverVID - Filter on a specific receiver (GPS gate, Lan gate, Mesh gate). If null then all
+   * @param {string} transmitterVID - Filter on a specific transmitter (Nanolink). If null then all
+   * @param {string[]} trackers - Filter on specific trackers (Both receivers and transmitters). If null then all
+   * @param {string} startTime - Start date time (RFC 3389)
+   * @param {string} endTime - End date time (RFC 3389)
+   * @param {string} fromId - ObjectId to start from. Can be used to get incremental changes
+   * @param {number} limit - Limit the amount returned from initial data.
+   */
   constructor(
     connection: Connection,
     subscribe: boolean,
@@ -61,6 +95,13 @@ class LogLinksReceiver {
     console.log(this.variables);
   }
 
+  /**
+   * Start the subscription
+   * @date 6/1/2023 - 8:08:13 AM
+   *
+   * @async
+   * @returns {*}
+   */
   async run() {
     if (!this.connection.logSubscriptionHandler) {
       this.connection.connectLog(false);
@@ -137,6 +178,12 @@ class LogLinksReceiver {
       }
     }
   }
+  /**
+   * Called when data is received from the subscription
+   * @date 6/1/2023 - 8:08:13 AM
+   *
+   * @param {*} data
+   */
   onDataReceived(data: any) {}
 }
 export { LogLinksReceiver };

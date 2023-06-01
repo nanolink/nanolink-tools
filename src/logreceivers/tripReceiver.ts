@@ -1,117 +1,134 @@
 import { Connection } from "../index";
 import { LogSubscriptions } from "../definitions/logsubscriptions";
 
-const GPSOption: any = {
-  NONE: "NONE",
-  START_AND_END: "START_AND_END",
-  ALL: "ALL",
-};
-const OdometerOption: any = {
-  NONE: "NONE",
-  START_AND_END: "START_AND_END",
-  ALL: "ALL",
-};
-const LinkOption: any = {
-  NONE: "NONE",
-  ALL: "ALL",
-};
-
-class TripsReceiver {
-  connection;
-  trackerVIDs;
-  minStopTime;
-  start;
-  end;
-  constructor(
-    connection: Connection,
-    trackerVIDs?: string[],
-    start?: string,
-    end?: string,
-    minStopTime?: number
-  ) {
+/**
+ * Returns trip
+ * @date 6/1/2023 - 8:52:27 AM
+ *
+ * @class TripReceiver
+ */
+class TripReceiver {
+  /**
+   * Connection handler
+   * @date 6/1/2023 - 8:52:27 AM
+   *
+   * @type {Connection}
+   */
+  connection: Connection;
+  /**
+   * Creates an instance of TripReceiver.
+   * @date 6/1/2023 - 1:03:08 PM
+   *
+   * @constructor
+   * @param {Connection} connection
+   */
+  constructor(connection: Connection) {
     this.connection = connection;
-    this.trackerVIDs = trackerVIDs;
-    this.start = start;
-    this.end = end;
-    this.minStopTime = minStopTime;
   }
-  async run(gpsOption?: string, odometerOption?: string, linkOption?: string) {
+
+  /**
+   * Run subscription
+   * @date 6/1/2023 - 8:52:27 AM
+   *
+   * @async
+   * @param {?boolean} [includeLinks] - Include what the receiver has links to
+   * @param {?boolean} [includeGPS] - Include gps points in the link timerange
+   * @param {?boolean} [includeOdometer] - Include odemeter values
+   * @param {?string[]} [trackerVIDs] - Filter receivers. If null then all
+   * @param {?string} [startTime] - Start time
+   * @param {?string} [endTime] - End time
+   * @param {?number} [minStopTimeInSeconds] - Min time between trips before they are consolidated
+   * @param {?boolean} [includeInitial] - Include initial data
+   * @param {?boolean} [subscribe] - Subcribe to changes
+   * @returns {*}
+   */
+  async run(
+    includeLinks?: boolean,
+    includeGPS?: boolean,
+    includeOdometer?: boolean,
+    trackerVIDs?: string[],
+    startTime?: string,
+    endTime?: string,
+    minStopTimeInSeconds?: number,
+    includeInitial?: boolean,
+    subscribe?: boolean
+  ) {
     if (!this.connection.logSubscriptionHandler) {
-      this.connection.connectLog(false);
+      await this.connection.connectLog(true);
     }
-    let includeGPS = gpsOption != GPSOption.NONE;
-    let includeOdometer = odometerOption != OdometerOption.NONE;
-    let includeLinks = linkOption != LinkOption.NONE;
-    if (gpsOption && GPSOption[gpsOption] == undefined) {
-      throw "Invalid gpsOption";
-    }
-    if (odometerOption && OdometerOption[odometerOption] == undefined) {
-      throw "Invalid odoMeterOption";
-    }
-    if (linkOption && LinkOption[linkOption] == undefined) {
-      throw "Invalid linkOption";
-    }
-    let vars = {
-      trackerVIDs: this.trackerVIDs,
-      start: this.start,
-      end: this.end,
-      minStopTime: this.minStopTime,
-      gpsOption: gpsOption,
-      odometerOption: odometerOption,
-      linkOption: linkOption,
-    };
-    let sub = await this.connection.subscribelog(
+    let iter = await this.connection.subscribelog(
       LogSubscriptions.trips(includeLinks, includeGPS, includeOdometer),
-      vars
+      {
+        linkOption: includeLinks ? "ALL" : "NONE",
+        gpsOption: includeGPS ? "ALL" : "NONE",
+        odometerOption: includeOdometer ? "START_AND_END" : "NONE",
+        includeInitial: includeInitial,
+        trackerVIDs: trackerVIDs,
+        subscribe: subscribe,
+        start: startTime,
+        end: endTime,
+        minStopTime: minStopTimeInSeconds,
+      }
     );
-    let curTrip = null;
-    for await (let doc of sub) {
-      let data = doc.data;
-      if (data) {
-        switch (data.__typename) {
-          case "QTrip":
-            if (curTrip) {
-              this.onTripPostProcess(curTrip);
-            }
-            curTrip = { ...data };
-            break;
-          case "QGPSTripInfo":
-            if (!curTrip.gps) {
-              curTrip.gps = [data];
-            } else {
-              curTrip.gps.push(data);
-            }
-            break;
-          case "QOdometerTripInfo":
-            if (!curTrip.odometer) {
-              curTrip.odometer = [data];
-            } else {
-              curTrip.odometer.push(data);
-            }
-            break;
-          case "QLinkTripInfo":
-            if (!curTrip.links) {
-              curTrip.links = [data];
-            } else {
-              curTrip.links.push(data);
-            }
-            break;
+    let curTrip: any = null;
+    for await (let r of iter) {
+      if (r.type == "DONE" || r.type == "REC_DONE") {
+        if (curTrip) {
+          this.onDataReceived(curTrip);
+          curTrip = null;
+        }
+        if (r.type == "DONE") {
+          this.onInitialReceived();
+        }
+      } else if (r.data) {
+        if (r.data.__typename == "QTrip") {
+          if (curTrip) {
+            this.onDataReceived(curTrip);
+          }
+          curTrip = this.makecopy_notype(r.data);
+        } else if (r.data.__typename == "QOdomterTripInfo") {
+          if (curTrip.odoStart) {
+            curTrip.odoEnd = this.makecopy_notype(r.data);
+          } else {
+            curTrip.odoStart = this.makecopy_notype(r.data);
+          }
+        } else if (r.data.__typename == "QGPSTripInfo") {
+          if (!curTrip.gps) {
+            curTrip.gps = [];
+          }
+          curTrip.gps.push(this.makecopy_notype(r.data));
+        } else if (r.data.__typename == "QLinkTripInfo") {
+          if (!curTrip.links) {
+            curTrip.links = [];
+          }
+          curTrip.links.push(this.makecopy_notype(r.data));
         }
       }
     }
-    if (curTrip) {
-      this.onTripPostProcess(curTrip);
-    }
   }
-  onTripPostProcess(trip: any) {
-    if (trip.odometer) {
-      let firstO = trip.odometer[0];
-      let lastO = trip.odometer[trip.odometer.length - 1];
-      trip.distance = lastO.value - firstO.value;
-    }
-    this.onDataReceived(trip);
+  /**
+   * Called when initial data has been received
+   * @date 6/1/2023 - 8:52:27 AM
+   */
+  onInitialReceived() {}
+  /**
+   * Internal function copy an object without the __typename property
+   * @date 6/1/2023 - 8:52:27 AM
+   *
+   * @param {*} o
+   * @returns {*}
+   */
+  private makecopy_notype(o: any) {
+    let retVal: any = new Object();
+    Object.assign(retVal, o);
+    delete retVal.__typename;
+    return retVal;
   }
-  onDataReceived(trip: any) {}
-}
 
-module.exports = { GPSOption, OdometerOption, LinkOption, TripsReceiver };
+  /**
+   * Called when data is received
+   * @param {object} data - Set this callback to receive data.
+   */
+  onDataReceived(data: any) {}
+}
+export { TripReceiver };

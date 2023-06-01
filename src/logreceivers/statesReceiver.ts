@@ -1,6 +1,12 @@
 import { Connection } from "../index";
 import { LogSubscriptions } from "../definitions/logsubscriptions";
 
+/**
+ * Valid double type tracker states 
+ * @date 6/1/2023 - 8:10:51 AM
+ *
+ * @type {*}
+ */
 const DoubleFieldsLog: any = {
   EXTERNAL_VOLTAGE: "EXTERNAL_VOLTAGE",
   TOTAL_ODOMETER: "TOTAL_ODOMETER",
@@ -10,6 +16,12 @@ const DoubleFieldsLog: any = {
   CALCULATED_ODOMETER: "CALCULATED_ODOMETER",
 };
 
+/**
+ * Valid integer type tracker states
+ * @date 6/1/2023 - 8:10:51 AM
+ *
+ * @type {*}
+ */
 const IntFieldsLog: any = {
   TEMPERATURE: "TEMPERATURE",
   BATTERY_LEVEL: "BATTERY_LEVEL",
@@ -17,6 +29,12 @@ const IntFieldsLog: any = {
   ALL_TAGS_FOUND: "ALL_TAGS_FOUND",
 };
 
+/**
+ * Valid boolean type tracker states
+ * @date 6/1/2023 - 8:10:51 AM
+ *
+ * @type {*}
+ */
 const BoolFieldsLog: any = {
   MOVEMENT: "MOVEMENT",
   IGNITION: "IGNITION",
@@ -25,9 +43,21 @@ const BoolFieldsLog: any = {
   BLUETOOTH_FAILURE: "BLUETOOTH_FAILURE",
 };
 
+/**
+ * Valid long integer (64 bit) tracker states
+ * @date 6/1/2023 - 8:10:51 AM
+ *
+ * @type {*}
+ */
 const LongFieldsLog: any = {
   ACTIVE_COUNTER: "ACTIVE_COUNTER",
 };
+/**
+ * All valid fields
+ * @date 6/1/2023 - 8:10:51 AM
+ *
+ * @type {*}
+ */
 const AnyFieldsLog: any = {
   ...DoubleFieldsLog,
   ...IntFieldsLog,
@@ -35,8 +65,26 @@ const AnyFieldsLog: any = {
   ...LongFieldsLog,
 };
 
+/**
+ * Subscription to retrieve tracker states (Base class)
+ * @date 6/1/2023 - 8:10:51 AM
+ *
+ * @class LogStateReceiverBase
+ */
 class LogStateReceiverBase {
+  /**
+   * Core and log connection object
+   * @date 6/1/2023 - 8:10:51 AM
+   *
+   * @type {Connection}
+   */
   connection: Connection;
+  /**
+   * Subscription variables
+   * @date 6/1/2023 - 8:10:51 AM
+   *
+   * @type {*}
+   */
   variables: any = {
     subscribe: false,
     includeInitial: false,
@@ -51,19 +99,28 @@ class LogStateReceiverBase {
       },
     },
   };
+  /**
+   * Query to run retrieving tracker states
+   * @date 6/1/2023 - 8:10:51 AM
+   *
+   * @type {string}
+   */
   query: string = "";
 
   /**
+   * Creates an instance of LogStateReceiverBase.
+   * @date 6/1/2023 - 12:50:05 PM
    *
-   * @param {Connection} connection - THe connection handler
-   * @param {boolean} subscribe - Send updates if changes occur
+   * @constructor
+   * @param {Connection} connection - The connection handler
+   * @param {boolean} subscribe- Send updates if changes occur
    * @param {boolean} includeInitial - Include initial data
    * @param {string[]} trackerVIDs - array of tracker VIDs
    * @param {string} field - State field
-   * @param {date} startTime - Start time
-   * @param {date} endTime - End time
-   * @param {string} fromId - Start id
-   * @param {number} limit - Limit no. of docs (if not set then all)
+   * @param {?string} [startTime] - Start time
+   * @param {?string} [endTime] - End time
+   * @param {?string} [fromId] - Start id
+   * @param {?number} [limit] - Limit no. of docs (if not set then all)
    */
   constructor(
     connection: Connection,
@@ -87,13 +144,23 @@ class LogStateReceiverBase {
     this.variables.filter.cursor.from = fromId;
     this.variables.filter.cursor.count = limit;
   }
+  /**
+   * Override this to valid the field
+   * @date 6/1/2023 - 8:10:51 AM
+   *
+   * @param {string} field
+   */
   validateField(field: string) {
     throw "Not implemented";
   }
 
   /**
    * Start the subscription
-   * @param {*} unwind - Give single updates otherwise an array
+   * @date 6/1/2023 - 8:17:36 AM
+   *
+   * @async
+   * @param {?boolean} [unwind]
+   * @returns {*}
    */
   async run(unwind?: boolean) {
     if (!this.connection.logSubscriptionHandler) {
@@ -141,13 +208,41 @@ class LogStateReceiverBase {
       }
     }
   }
+  /**
+   * Call back receiving data
+   * @date 6/1/2023 - 8:10:51 AM
+   *
+   * @param {*} data
+   */
   onDataReceived(data: any) {}
 }
 
 /**
  * Bool fields
  */
+/**
+ * Bool fields
+ * @date 6/1/2023 - 12:47:26 PM
+ *
+ * @class LogStateReceiverBool
+ * @extends {LogStateReceiverBase}
+ */
 class LogStateReceiverBool extends LogStateReceiverBase {
+  /**
+   * Creates an instance of LogStateReceiverBool.
+   * @date 6/1/2023 - 8:10:51 AM
+   *
+   * @constructor
+   * @param {Connection} connection - The connection handler
+   * @param {boolean} subscribe- Send updates if changes occur
+   * @param {boolean} includeInitial - Include initial data
+   * @param {string[]} trackerVIDs - array of tracker VIDs
+   * @param {string} field - State field
+   * @param {?string} [startTime] - Start time
+   * @param {?string} [endTime] - End time
+   * @param {?string} [fromId] - Start id
+   * @param {?number} [limit] - Limit no. of docs (if not set then all)
+   */
   constructor(
     connection: Connection,
     subscribe: boolean,
@@ -172,6 +267,12 @@ class LogStateReceiverBool extends LogStateReceiverBase {
     );
     this.query = LogSubscriptions.statesBool;
   }
+  /**
+   * Check if the field is a valid boolean field
+   * @date 6/1/2023 - 8:10:51 AM
+   *
+   * @param {string} field
+   */
   validateField(field: string) {
     if (BoolFieldsLog[field] == undefined) {
       throw `field: ${field} is not a bool field`;
@@ -180,8 +281,27 @@ class LogStateReceiverBool extends LogStateReceiverBase {
 }
 /**
  * Double fields
+ * @date 6/1/2023 - 12:47:51 PM
+ *
+ * @class LogStateReceiverInt
+ * @extends {LogStateReceiverBase}
  */
 class LogStateReceiverInt extends LogStateReceiverBase {
+  /**
+   * Creates an instance of LogStateReceiverInt.
+   * @date 6/1/2023 - 8:10:51 AM
+   *
+   * @constructor
+   * @param {Connection} connection - The connection handler
+   * @param {boolean} subscribe- Send updates if changes occur
+   * @param {boolean} includeInitial - Include initial data
+   * @param {string[]} trackerVIDs - array of tracker VIDs
+   * @param {string} field - State field
+   * @param {?string} [startTime] - Start time
+   * @param {?string} [endTime] - End time
+   * @param {?string} [fromId] - Start id
+   * @param {?number} [limit] - Limit no. of docs (if not set then all)
+   */
   constructor(
     connection: Connection,
     subscribe: boolean,
@@ -206,13 +326,41 @@ class LogStateReceiverInt extends LogStateReceiverBase {
     );
     this.query = LogSubscriptions.statesInt;
   }
+  /**
+   * Check if field s a valid integer field
+   * @date 6/1/2023 - 8:10:51 AM
+   *
+   * @param {string} field
+   */
   validateField(field: string) {
     if (IntFieldsLog[field] == undefined) {
       throw `field: ${field} is not a int field`;
     }
   }
 }
+/**
+ * Description placeholder
+ * @date 6/1/2023 - 8:10:51 AM
+ *
+ * @class LogStateReceiverDouble
+ * @extends {LogStateReceiverBase}
+ */
 class LogStateReceiverDouble extends LogStateReceiverBase {
+  /**
+   * Creates an instance of LogStateReceiverDouble.
+   * @date 6/1/2023 - 8:10:51 AM
+   *
+   * @constructor
+   * @param {Connection} connection - The connection handler
+   * @param {boolean} subscribe- Send updates if changes occur
+   * @param {boolean} includeInitial - Include initial data
+   * @param {string[]} trackerVIDs - array of tracker VIDs
+   * @param {string} field - State field
+   * @param {?string} [startTime] - Start time
+   * @param {?string} [endTime] - End time
+   * @param {?string} [fromId] - Start id
+   * @param {?number} [limit] - Limit no. of docs (if not set then all)
+   */
   constructor(
     connection: Connection,
     subscribe: boolean,
@@ -237,6 +385,12 @@ class LogStateReceiverDouble extends LogStateReceiverBase {
     );
     this.query = LogSubscriptions.statesDouble;
   }
+  /**
+   * Check if the field is a valid double field
+   * @date 6/1/2023 - 8:10:51 AM
+   *
+   * @param {string} field
+   */
   validateField(field: string) {
     if (DoubleFieldsLog[field] == undefined) {
       throw `field: ${field} is not a double field`;
@@ -245,8 +399,27 @@ class LogStateReceiverDouble extends LogStateReceiverBase {
 }
 /**
  * Long fields
+ * @date 6/1/2023 - 12:49:29 PM
+ *
+ * @class LogStateReceiverLong
+ * @extends {LogStateReceiverBase}
  */
 class LogStateReceiverLong extends LogStateReceiverBase {
+  /**
+   * Creates an instance of LogStateReceiverLong.
+   * @date 6/1/2023 - 8:10:51 AM
+   *
+   * @constructor
+   * @param {Connection} connection - The connection handler
+   * @param {boolean} subscribe- Send updates if changes occur
+   * @param {boolean} includeInitial - Include initial data
+   * @param {string[]} trackerVIDs - array of tracker VIDs
+   * @param {string} field - State field
+   * @param {?string} [startTime] - Start time
+   * @param {?string} [endTime] - End time
+   * @param {?string} [fromId] - Start id
+   * @param {?number} [limit] - Limit no. of docs (if not set then all)
+   */
   constructor(
     connection: Connection,
     subscribe: boolean,
@@ -271,6 +444,12 @@ class LogStateReceiverLong extends LogStateReceiverBase {
     );
     this.query = LogSubscriptions.statesLong;
   }
+  /**
+   * Check field is valid long field
+   * @date 6/1/2023 - 8:10:51 AM
+   *
+   * @param {string} field
+   */
   validateField(field: string) {
     if (LongFieldsLog[field] == undefined) {
       throw `field: ${field} is not a long field`;
@@ -279,8 +458,27 @@ class LogStateReceiverLong extends LogStateReceiverBase {
 }
 /**
  * Field of any type (value as a string)
+ * @date 6/1/2023 - 12:53:38 PM
+ *
+ * @class LogStateReceiverAny
+ * @extends {LogStateReceiverBase}
  */
 class LogStateReceiverAny extends LogStateReceiverBase {
+  /**
+   * Creates an instance of LogStateReceiverAny.
+   * @date 6/1/2023 - 8:10:51 AM
+   *
+   * @constructor
+   * @param {Connection} connection - The connection handler
+   * @param {boolean} subscribe- Send updates if changes occur
+   * @param {boolean} includeInitial - Include initial data
+   * @param {string[]} trackerVIDs - array of tracker VIDs
+   * @param {string} field - State field
+   * @param {?string} [startTime] - Start time
+   * @param {?string} [endTime] - End time
+   * @param {?string} [fromId] - Start id
+   * @param {?number} [limit] - Limit no. of docs (if not set then all)
+   */
   constructor(
     connection: Connection,
     subscribe: true,
@@ -305,6 +503,12 @@ class LogStateReceiverAny extends LogStateReceiverBase {
     );
     this.query = LogSubscriptions.statesAll;
   }
+  /**
+   * Check if field is valid
+   * @date 6/1/2023 - 8:10:51 AM
+   *
+   * @param {string} field
+   */
   validateField(field: string) {
     if (AnyFieldsLog[field] == undefined) {
       throw `field: ${field} is not a field`;

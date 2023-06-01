@@ -1,7 +1,13 @@
 import { SubscriptionHandler } from "./subcriptionHandler";
-import { deferedPromise } from "./deferredPromise";
+import { deferredPromise } from "./deferredPromise";
 import EventEmitter from "events";
 
+/**
+ * Enumeration returned from graphql subscriptions
+ * @date 6/1/2023 - 9:35:43 AM
+ *
+ * @type {{ DELETED: string; UPDATED: string; START: string; DONE: string; VERSION_ERROR: string; }}
+ */
 const SyncType = {
   DELETED: "DELETED",
   UPDATED: "UPDATED",
@@ -12,21 +18,77 @@ const SyncType = {
 
 /**
  * This class is used to mirror data from the nanolink system and monitor changes.
+ * @date 6/1/2023 - 9:04:21 AM
+ *
+ * @export
+ * @class Mirror
  */
 export class Mirror {
+  /**
+   * Contains the map of the data returned from graphql subscription, where the key is 'id' on returned data.
+   * @date 6/1/2023 - 9:35:43 AM
+   *
+   * @type {Map<string, any>}
+   */
   storage: Map<string, any> = new Map<string, any>();
+  /**
+   * Reference to subscription handler
+   * @date 6/1/2023 - 9:35:43 AM
+   *
+   * @type {SubscriptionHandler}
+   */
   handler: SubscriptionHandler;
+  /**
+   * Name of the mirror
+   * @date 6/1/2023 - 9:35:43 AM
+   *
+   * @type {string}
+   */
   name: string;
+  /**
+   * The query used to retrieved the mirror
+   * @date 6/1/2023 - 9:35:43 AM
+   *
+   * @type {string}
+   */
   query: string;
+  /**
+   * Max. version of the data returned from the server
+   * @date 6/1/2023 - 9:35:43 AM
+   *
+   * @type {number}
+   */
   version: number = -1;
+  /**
+   * Max. version of the operational data returned from the server. 
+   * @date 6/1/2023 - 9:35:43 AM
+   *
+   * @type {?string}
+   */
   opVersion?: string;
+  /**
+   * Event emitter
+   * @date 6/1/2023 - 9:35:43 AM
+   *
+   * @type {EventEmitter}
+   */
   emitter: EventEmitter;
+  /**
+   * Current subscription async iterator
+   * @date 6/1/2023 - 9:35:43 AM
+   *
+   * @protected
+   * @type {*}
+   */
   protected currentIterator: any;
   /**
+   * Creates an instance of Mirror.
+   * @date 6/1/2023 - 9:35:18 AM
    *
-   * @param {string} name     Name of the mirror
-   * @param {string} query    The graphQL query to fetch the mirror (Please use the subscriptions defined in definitions )
-   * @param {SubscriptionHandler} handler The subscription handler to use
+   * @constructor
+   * @param {string} name - Name of the mirror
+   * @param {string} query - The graphQL query to fetch the mirror (Please use the subscriptions defined in definitions )
+   * @param {SubscriptionHandler} handler - The subscription handler to use
    */
   constructor(name: string, query: string, handler: SubscriptionHandler) {
     this.name = name;
@@ -36,6 +98,13 @@ export class Mirror {
     this.opVersion = undefined;
   }
 
+  /**
+   * Process a document return from the server
+   * @date 6/1/2023 - 9:35:43 AM
+   *
+   * @private
+   * @param {*} record
+   */
   private processRecord(record: any) {
     if (record.opVersion && (!this.opVersion || record.opVersion > this.opVersion))
     {
@@ -63,8 +132,14 @@ export class Mirror {
     }
   }
 
+  /**
+   * Starts the subscription to server getting the mirror data
+   * @date 6/1/2023 - 9:35:43 AM
+   *
+   * @returns {Promise<any>}
+   */
   loadInternal(): Promise<any> {
-    let initPromise = deferedPromise();
+    let initPromise = deferredPromise();
     this.handler
       .subscribe(this.query, { version: this.version, opVersion: this.opVersion })
       .then(async (iterator) => {
@@ -112,11 +187,11 @@ export class Mirror {
     return initPromise;
   }
   /**
-   * Start the subscription and loads initial data
+   * Start the subscription and loads initial data. Handle version error to reinitialize the entire mirror
    * @returns A Map containing the data
    */
   load(): Promise<any> {
-    let initPromise = deferedPromise();
+    let initPromise = deferredPromise();
     this.loadInternal()
       .then((result) => {
         initPromise.resolve(result);
@@ -150,6 +225,10 @@ export class Mirror {
    * @param {any} doc - The new document
    */
   onInserted(mirror: this, doc: any) {}
+  /**
+   * Close the mirror subscription
+   * @date 6/1/2023 - 9:35:43 AM
+   */
   close() {
     this.currentIterator.return();
   }

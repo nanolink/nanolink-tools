@@ -1,3 +1,9 @@
+/**
+ * Subscription definition for log server
+ * @date 6/1/2023 - 12:38:14 PM
+ *
+ * @type {{ linksCompound: string; statesBool: string; statesInt: string; statesLong: string; statesDouble: string; statesAll: string; trips(includeLinks?: boolean, includeGPS?: boolean, includeOdometer?: boolean): string; workhours(includeLinks?: boolean, includeGPS?: boolean, includeOdometer?: boolean): string; gpsLog: stri...}
+ */
 const LogSubscriptions = {
   linksCompound: `
       subscription linkCompound(
@@ -227,8 +233,8 @@ const LogSubscriptions = {
     `;
   },
   gpsLog: `
-    subscription gpsLog($from: ObjectId, $startFrom: DateTime) {
-      gps_position(filter: { cursor: { from: $from }, start: $startFrom }, subscribe: true, includeInitial: true) {
+    subscription gpsLog($from: ObjectId, $startFrom: DateTime, $count: Int!) {
+      gps_position(filter: { cursor: { from: $from, count: $count }, start: $startFrom }, subscribe: true, includeInitial: true) {
         type
         data {
           createdTime

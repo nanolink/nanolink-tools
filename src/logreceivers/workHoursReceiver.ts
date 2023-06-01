@@ -1,16 +1,35 @@
 import { Connection } from "../index";
 import { LogSubscriptions } from "../definitions/logsubscriptions";
 
-class TripReceiver {
+class WorkHoursReceiver {
   connection: Connection;
   /**
+   * Creates an instance of WorkHoursReceiver.
+   * @date 6/1/2023 - 1:09:35 PM
    *
-   * @param {Connection} connection
+   * @constructor
+   * @param {Connection} connection - Connection handler
    */
   constructor(connection: Connection) {
     this.connection = connection;
   }
 
+  /**
+   * Run subscription
+   * @date 6/1/2023 - 1:07:47 PM
+   *
+   * @async
+   * @param {?boolean} [includeLinks] - Include what the receiver has links to
+   * @param {?boolean} [includeGPS] - Include gps points in the link timerange
+   * @param {?boolean} [includeOdometer] - Include odemeter values
+   * @param {?string[]} [trackerVIDs] - Filter receivers. If null then all
+   * @param {?string} [startTime] - Start time
+   * @param {?string} [endTime] - End time
+   * @param {?number} [minStopTimeInSeconds] - Min time between trips before they are consolidated
+   * @param {?boolean} [includeInitial] - Include initial data
+   * @param {?boolean} [subscribe] - Subcribe to changes
+   * @returns {*}
+   */
   async run(
     includeLinks?: boolean,
     includeGPS?: boolean,
@@ -26,7 +45,7 @@ class TripReceiver {
       await this.connection.connectLog(true);
     }
     let iter = await this.connection.subscribelog(
-      LogSubscriptions.trips(includeLinks, includeGPS, includeOdometer),
+      LogSubscriptions.workhours(includeLinks, includeGPS, includeOdometer),
       {
         linkOption: includeLinks ? "ALL" : "NONE",
         gpsOption: includeGPS ? "ALL" : "NONE",
@@ -55,6 +74,9 @@ class TripReceiver {
             this.onDataReceived(curTrip);
           }
           curTrip = this.makecopy_notype(r.data);
+          curTrip.workSeconds = curTrip.stopStamp - curTrip.startStamp;
+          delete curTrip.startStamp;
+          delete curTrip.stopStamp;
         } else if (r.data.__typename == "QOdomterTripInfo") {
           if (curTrip.odoStart) {
             curTrip.odoEnd = this.makecopy_notype(r.data);
@@ -75,8 +97,19 @@ class TripReceiver {
       }
     }
   }
+  /**
+   * Called when initial data has been received
+   * @date 6/1/2023 - 8:52:27 AM
+   */  
   onInitialReceived() {}
-  makecopy_notype(o: any) {
+  /**
+   * Internal function copy an object without the __typename property
+   * @date 6/1/2023 - 8:52:27 AM
+   *
+   * @param {*} o
+   * @returns {*}
+   */
+  private makecopy_notype(o: any) {
     let retVal: any = new Object();
     Object.assign(retVal, o);
     delete retVal.__typename;
@@ -84,9 +117,9 @@ class TripReceiver {
   }
 
   /**
-   *
+   * Called when data is received
    * @param {object} data - Set this callback to receive data.
    */
   onDataReceived(data: any) {}
 }
-export { TripReceiver };
+export { WorkHoursReceiver };

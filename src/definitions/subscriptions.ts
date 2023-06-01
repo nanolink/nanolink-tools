@@ -1,10 +1,52 @@
-const commonFields = "id:idStr version createdDateTime";
-const commonReferenceFields = "groupId groupName groupPath labels";
-const lastLogFields = "id eventCode stamp serviceDataId userId comment";
-const serviceDataCommonFields = `id createdDateTime servicePlanId userId lastLog {${lastLogFields}}`;
-const mCommonFields = "type total deleteId deleteVersion";
-const mServiceCommonFields = `name description createdDate createdBy ${commonFields}`;
+/**
+ * Common field for most subscriptions
+ * @date 6/1/2023 - 12:42:23 PM
+ *
+ * @type {string}
+ */
+const commonFields: string = "id:idStr version createdDateTime";
+/**
+ * Common fields for a reference
+ * @date 6/1/2023 - 12:42:23 PM
+ *
+ * @type {string}
+ */
+const commonReferenceFields: string = "groupId groupName groupPath labels";
+/**
+ * Fields on service log
+ * @date 6/1/2023 - 12:42:23 PM
+ *
+ * @type {string}
+ */
+const lastLogFields:string = "id eventCode stamp serviceDataId userId comment";
+/**
+ * Service data fields
+ * @date 6/1/2023 - 12:42:23 PM
+ *
+ * @type {string}
+ */
+const serviceDataCommonFields: string = `id createdDateTime servicePlanId userId lastLog {${lastLogFields}}`;
+/**
+ * Common fields on the outer subscription document result
+ * @date 6/1/2023 - 12:42:23 PM
+ *
+ * @type {string}
+ */
+const mCommonFields: string = "type total deleteId deleteVersion";
+/**
+ * Common service fields
+ * @date 6/1/2023 - 12:42:23 PM
+ *
+ * @type {string}
+ */
+const mServiceCommonFields:string = `name description createdDate createdBy ${commonFields}`;
 
+/**
+ * Subscription on the core server
+ * @date 6/1/2023 - 12:42:23 PM
+ *
+ * @type {*}
+ */
 const Subscriptions: any = {
   references: `
       subscription References($version:Int!) {
@@ -286,6 +328,12 @@ const Subscriptions: any = {
       }  
     }`,
 };
+/**
+ * Temporary subscriptions on the coreserver
+ * @date 6/1/2023 - 12:40:26 PM
+ *
+ * @type {*}
+ */
 const TempSubscriptions: any = {
   linkconnected: `subscription linkconnected {
         otrackers_linkconnectedbulk(subscribe: true, includeInitial: true) {
