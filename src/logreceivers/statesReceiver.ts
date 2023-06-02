@@ -219,9 +219,6 @@ class LogStateReceiverBase {
 
 /**
  * Bool fields
- */
-/**
- * Bool fields
  * @date 6/1/2023 - 12:47:26 PM
  *
  * @class LogStateReceiverBool
@@ -339,7 +336,7 @@ class LogStateReceiverInt extends LogStateReceiverBase {
   }
 }
 /**
- * Description placeholder
+ * Double field
  * @date 6/1/2023 - 8:10:51 AM
  *
  * @class LogStateReceiverDouble

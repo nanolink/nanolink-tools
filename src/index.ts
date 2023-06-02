@@ -5,9 +5,9 @@ import { SubscriptionHandler } from "./subcriptionHandler";
 import { initWs } from "./js/initWs";
 import { deferredPromise, DeferredPromise } from "./deferredPromise";
 
-/**
- * Make websocket available for 'SubscriptionClient'
- */
+
+//  Make websocket available for 'SubscriptionClient'
+ 
 initWs();
 
 
@@ -77,7 +77,7 @@ export class Connection {
   autoReconnect: boolean = false;
   
   /**
-   * Description placeholder
+   * Return customer information
    * @date 6/1/2023 - 8:53:29 AM
    *
    * @readonly
@@ -130,7 +130,7 @@ export class Connection {
     this.onLogReady();
   }
   /**
-   * Description placeholder
+   * Login to core server
    * @date 6/1/2023 - 8:53:29 AM
    *
    * @private

@@ -1,11 +1,5 @@
 const { HTTPAGENT } = require("./common");
 
-/**
- * Description placeholder
- * @date 6/1/2023 - 12:35:16 PM
- *
- * @type {*}
- */
 const ws = require("ws");
 /**
  * Class that makes sure the correct User-Agent is set on the http header

@@ -1,6 +1,12 @@
 import { Connection } from "../index";
 import { LogSubscriptions } from "../definitions/logsubscriptions";
 
+/**
+ * Work hour receiver
+ * @date 6/1/2023 - 3:47:22 PM
+ *
+ * @class WorkHoursReceiver
+ */
 class WorkHoursReceiver {
   connection: Connection;
   /**
@@ -106,7 +112,7 @@ class WorkHoursReceiver {
    * Internal function copy an object without the __typename property
    * @date 6/1/2023 - 8:52:27 AM
    *
-   * @param {*} o
+   * @param {*} o - Input object to copy
    * @returns {*}
    */
   private makecopy_notype(o: any) {

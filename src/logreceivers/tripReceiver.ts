@@ -115,7 +115,7 @@ class TripReceiver {
    * Internal function copy an object without the __typename property
    * @date 6/1/2023 - 8:52:27 AM
    *
-   * @param {*} o
+   * @param {*} - Input object to copy
    * @returns {*}
    */
   private makecopy_notype(o: any) {
