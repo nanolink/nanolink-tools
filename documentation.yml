@@ -1,0 +1,71 @@
+toc:
+  - name: README
+    file: README.md
+  - name: Handlers
+    description: |
+      Top level classes to handle data access on the core and log server
+  - Connection
+  - SubscriptionHandler
+  - QueryHandler
+  - Mirror
+  - WebSocketSub
+  - DefferedPromise
+  - name: Core receivers
+    description: |
+      Receivers are used to stream data from the nanolink system
+  - GPSReceiver
+  - StatesReceiverDouble
+  - StatesReceiverInt
+  - StatesReceiverBool
+  - StatesReceiverLong
+  - StatesReceiverAny
+  - TagPositionReceiver
+  - TransmitterLinksReceiver
+  - name: Field definitions
+    description: |
+      Valid fields for tracker states
+  - IntFields
+  - BoolFields
+  - LongFields
+  - DoubleFields
+  - AnyFields
+  - name: Log receivers
+    description: |
+      Receivers getting operational log data from the nanolink system
+  - GPSLogReceiver
+  - LogLinksReceiver
+  - LogStateReceiverBool
+  - LogStateReceiverInt
+  - LogStateReceiverDouble
+  - LogStateReceiverLong
+  - LogStateReceiverAny
+  - TripReceiver
+  - WorkHoursReceiver
+  - name: Field definitions (log)
+    description: |
+      Valid fields for tracker log states
+  - IntFieldsLog
+  - BoolFieldsLog
+  - LongFieldsLog
+  - DoubleFieldsLog
+  - AnyFieldsLog
+  - name: Subcription definitions
+    description: |
+      Contains query string definitions used for subscriptions
+  - Subscriptions
+  - TempSubscriptions
+  - StateSubscriptions
+  - LogSubscriptions
+  - name: Utility functions
+    description: |
+      Functions that make the framework spin
+  - initWs
+  - deferredPromise
+  - name: Types 
+    decription: |
+      Top level types
+  - SyncType
+  - name: Base classes
+    description: |
+      Misc base classes
+  - LogStateReceiverBase 

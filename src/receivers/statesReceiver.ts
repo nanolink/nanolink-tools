@@ -9,12 +9,19 @@ import { SrvRecord } from "dns";
  * @type {*}
  */
 const DoubleFields: any = {
+  /** EXTERNAL_VOLTAGE */
   EXTERNAL_VOLTAGE: "EXTERNAL_VOLTAGE",
+  /** TOTAL_ODOMETER */
   TOTAL_ODOMETER: "TOTAL_ODOMETER",
+  /** UPTIME */
   UPTIME: "UPTIME",
+  /** INTERNAL_VOLTAGE */
   INTERNAL_VOLTAGE: "INTERNAL_VOLTAGE",
+  /** INITIAL_ODOMETER */
   INITIAL_ODOMETER: "INITIAL_ODOMETER",
+  /** CALCULATED_ODOMETER */
   CALCULATED_ODOMETER: "CALCULATED_ODOMETER",
+  /** BATTERY_PERCENT */
   BATTERY_PERCENT: "BATTERY_PERCENT",
 };
 /**
@@ -22,6 +29,9 @@ const DoubleFields: any = {
  * @date 6/1/2023 - 1:17:12 PM
  *
  * @class StatesReceiverDouble
+ * @param {Connection} connection - The connection handler
+ * @param {string} field - double field @see {@link DoubleFields}
+ * @param {?string[]} [trackers] - tracker vid's
  */
 class StatesReceiverDouble {
   /**
@@ -51,7 +61,7 @@ class StatesReceiverDouble {
    *
    * @constructor
    * @param {Connection} connection - The connection handler
-   * @param {string} field - double field (DoubleFields)
+   * @param {string} field - double field @see {@link DoubleFields}
    * @param {?string[]} [trackers] - tracker vid's
    */
   constructor(connection: Connection, field: string, trackers?: string[]) {
@@ -103,9 +113,13 @@ class StatesReceiverDouble {
  * Int states
  */
 const IntFields: any = {
+  /** TEMPERATURE */
   TEMPERATURE: "TEMPERATURE",
+  /** BATTERY_LEVEL */
   BATTERY_LEVEL: "BATTERY_LEVEL",
+  /** NANO_LINKS_FOUND */
   NANO_LINKS_FOUND: "NANO_LINKS_FOUND",
+  /** ALL_TAGS_FOUND */
   ALL_TAGS_FOUND: "ALL_TAGS_FOUND",
 };
 /**
@@ -113,6 +127,9 @@ const IntFields: any = {
  * @date 6/1/2023 - 1:17:12 PM
  *
  * @class StatesReceiverInt
+ * @param {Connection} connection - The connection handler
+ * @param {string} field - Integer field @see {@link IntFields}
+ * @param {?string[]} [trackers] - tracker vid's
  */
 class StatesReceiverInt {
   /**
@@ -142,7 +159,7 @@ class StatesReceiverInt {
    *
    * @constructor
    * @param {Connection} connection - The connection handler
-   * @param {string} field - Integer field (IntFields)
+   * @param {string} field - Integer field @see {@link IntFields}
    * @param {?string[]} [trackers] - tracker vid's
    */
   constructor(connection: Connection, field: string, trackers?: string[]) {
@@ -186,10 +203,15 @@ class StatesReceiverInt {
  * Bool states
  */
 const BoolFields: any = {
+  /** MOVEMENT */
   MOVEMENT: "MOVEMENT",
+  /** IGNITION */
   IGNITION: "IGNITION",
+  /** GPS_ENABLED */
   GPS_ENABLED: "GPS_ENABLED",
+  /** BLUETOOTH_ENABLED */
   BLUETOOTH_ENABLED: "BLUETOOTH_ENABLED",
+  /** BLUETOOTH_FAILURE */
   BLUETOOTH_FAILURE: "BLUETOOTH_FAILURE",
 };
 /**
@@ -197,6 +219,9 @@ const BoolFields: any = {
  * @date 6/1/2023 - 1:17:12 PM
  *
  * @class StatesReceiverBool
+ * @param {Connection} connection - The connection handler
+ * @param {string} field - Boolean field @see {@link BoolFields}
+ * @param {?string[]} [trackers] - tracker vid's
  */
 class StatesReceiverBool {
   /**
@@ -226,7 +251,7 @@ class StatesReceiverBool {
    *
    * @constructor
    * @param {Connection} connection - The connection handler
-   * @param {string} field - Integer field (IntFields)
+   * @param {string} field - Boolean field @see {@link BoolFields}
    * @param {?string[]} [trackers] - tracker vid's
    */
   constructor(connection: Connection, field: string, trackers?: string[]) {
@@ -270,6 +295,7 @@ class StatesReceiverBool {
  * Long states
  */
 const LongFields: any = {
+  /** ACTIVE_COUNTER */
   ACTIVE_COUNTER: "ACTIVE_COUNTER",
 };
 /**
@@ -277,6 +303,9 @@ const LongFields: any = {
  * @date 6/1/2023 - 1:17:12 PM
  *
  * @class StatesReceiverLong
+ * @param {Connection} connection - The connection handler
+ * @param {string} field - long field @see {@link LongFields}
+ * @param {?string[]} [trackers] - tracker vid's
  */
 class StatesReceiverLong {
   /**
@@ -306,7 +335,7 @@ class StatesReceiverLong {
    *
    * @constructor
    * @param {Connection} connection - The connection handler
-   * @param {string} field - Integer field (IntFields)
+   * @param {string} field - Long field @see {@link LongFields}
    * @param {?string[]} [trackers] - tracker vid's
  */
   constructor(connection: Connection, field: string, trackers?: string[]) {
@@ -360,6 +389,9 @@ const AnyFields: any = {
  * @date 6/1/2023 - 1:17:12 PM
  *
  * @class StatesReceiverAny
+ * @param {Connection} connection - The connection handler
+ * @param {string} field - Any field @see {@link AnyFields}
+ * @param {?string[]} [trackers] - tracker vid's
  */
 class StatesReceiverAny {
   /**
@@ -389,7 +421,7 @@ class StatesReceiverAny {
    *
    * @constructor
    * @param {Connection} connection - The connection handler
-   * @param {string} field - Integer field (IntFields)
+   * @param {string} field - Any field @see {@link AnyFields}
    * @param {?string[]} [trackers] - tracker vid's
    */
   constructor(connection: Connection, field: string, trackers?: string[]) {

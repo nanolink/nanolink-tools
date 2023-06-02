@@ -12,11 +12,27 @@ initWs();
 
 
 /**
- * This class handle connections to coreserver and logserver. Is also a factory for mirrors
+ * This class handles connections to coreserver and logserver. Is also a factory for mirrors
  * @date 6/1/2023 - 8:53:38 AM
  *
  * @export
  * @class Connection
+ * @param {string} url - Url to the core server
+ * @param {string} apiToken - The api token given by nanolink
+ * @example 
+ * let connection = new Connection(url, apitoken);
+ * connection.onReady = (customer) =>  {
+ *    // Ready to process data
+ *    
+ *    // Get a mirror from the core server
+ *    let references = await connection.getMirror("references");
+ * }
+ * connection.onLogReady = () => {
+ *    // Ready to process log data
+ * }
+ * await connection.connect(true)
+ * // To connect to the log server
+ * await connection.connectLog(true)  
  */
 export class Connection {
   /**

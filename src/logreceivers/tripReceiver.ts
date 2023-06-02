@@ -6,6 +6,7 @@ import { LogSubscriptions } from "../definitions/logsubscriptions";
  * @date 6/1/2023 - 8:52:27 AM
  *
  * @class TripReceiver
+ * @param {Connection} connection
  */
 class TripReceiver {
   /**

@@ -6,6 +6,7 @@ import { StateSubscriptions } from "../definitions/stateSubscriptions";
  * @date 6/1/2023 - 1:14:17 PM
  *
  * @class GPSReceiver
+ * @param {Connection} connection - Connection handler
  */
 class GPSReceiver {
   /**

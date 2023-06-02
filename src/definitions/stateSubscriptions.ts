@@ -5,6 +5,15 @@
  * @type {{ transmitterLinks(includeLinks?: boolean, includeNewest?: boolean, includeNearest?: boolean, includeNewestByTrackerType?: boolean, includeNewestByReferenceType?: boolean): string; ... 6 more ...; statesAny: string; }}
  */
 const StateSubscriptions = {
+  /**
+   * Transmitter links. Links from the transmitters point of view. @see {TransmitterLinksReceiver}
+   * @param includeLinks 
+   * @param includeNewest 
+   * @param includeNearest 
+   * @param includeNewestByTrackerType 
+   * @param includeNewestByReferenceType 
+   * @returns 
+   */
   transmitterLinks(
     includeLinks?: boolean,
     includeNewest?: boolean,
@@ -78,6 +87,9 @@ const StateSubscriptions = {
       }    
     `;
   },
+  /**
+   * Tag position query @see {@link TagPositionReceiver}
+   */
   tag_positions: `
      subscription links($trackerVIDs: [String], $subscribe: Boolean!, $onlyIfLinkChanges: Boolean) {
        otrackers_taglinksbulk(trackerVIDs: $trackerVIDs, includeInitial: true, subscribe: $subscribe, onlyIfLinkChanges: $onlyIfLinkChanges) {

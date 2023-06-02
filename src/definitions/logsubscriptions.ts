@@ -5,6 +5,9 @@
  * @type {{ linksCompound: string; statesBool: string; statesInt: string; statesLong: string; statesDouble: string; statesAll: string; trips(includeLinks?: boolean, includeGPS?: boolean, includeOdometer?: boolean): string; workhours(includeLinks?: boolean, includeGPS?: boolean, includeOdometer?: boolean): string; gpsLog: stri...}
  */
 const LogSubscriptions = {
+  /** 
+   *  Get links and all information about them. @see {@link LogLinksReceiver}
+   */    
   linksCompound: `
       subscription linkCompound(
         $subscribe: Boolean!
@@ -66,6 +69,9 @@ const LogSubscriptions = {
         }
       }
       `,
+  /** 
+   *  Get bool states @see {@link StatesReceiverBool}
+   */
   statesBool: `
       subscription states($filter: TrackerInfoFilterBoolOfTrackerInfoBoolInput!, $subscribe: Boolean!, $includeInitial: Boolean!) {
         info_tracker_boolbulk(
@@ -83,7 +89,10 @@ const LogSubscriptions = {
           }
         }
       }
-      `,
+      `,  
+  /** 
+   *  Get integer states
+   */
   statesInt: `
       subscription states($filter: TrackerInfoFilterIntOfTrackerInfoIntInput!, $subscribe: Boolean!, $includeInitial: Boolean!) {
         info_tracker_intbulk(
@@ -102,6 +111,9 @@ const LogSubscriptions = {
         }
       }
       `,
+  /** 
+   *  Get long states
+   */
   statesLong: `
       subscription states($filter: TrackerInfoFilterLongOfTrackerInfoLongInput!, $subscribe: Boolean!, $includeInitial: Boolean!) {
         info_tracker_longbulk(
@@ -119,7 +131,10 @@ const LogSubscriptions = {
           }
         }
       }
-      `,
+      `,  
+  /** 
+   *  Get double states
+   */
   statesDouble: `
       subscription states($filter: TrackerInfoFilterDoubleOfTrackerInfoDoubleInput!, $subscribe: Boolean!, $includeInitial: Boolean!) {
         info_tracker_doublebulk(
@@ -138,6 +153,9 @@ const LogSubscriptions = {
         }
       }
       `,
+  /** 
+   *  Get any states
+   */
   statesAll: `
       subscription states($filter: TrackerInfoFilterAllOfTrackerInfoAllInput!, $subscribe: Boolean!, $includeInitial: Boolean!) {
         info_tracker_allbulk(
@@ -156,6 +174,9 @@ const LogSubscriptions = {
         }
       }
       `,
+  /** 
+   *  Trips with odometer, gps and link information
+   */
   trips(
     includeLinks?: boolean,
     includeGPS?: boolean,
@@ -193,6 +214,9 @@ const LogSubscriptions = {
       }
     `;
   },
+  /** 
+   *  Get work hours. How long a piece of equipment has been active
+   */
   workhours(
     includeLinks?: boolean,
     includeGPS?: boolean,
@@ -232,6 +256,9 @@ const LogSubscriptions = {
       }
     `;
   },
+  /** 
+   *  Get gps log
+   */
   gpsLog: `
     subscription gpsLog($from: ObjectId, $startFrom: DateTime, $count: Int!) {
       gps_position(filter: { cursor: { from: $from, count: $count }, start: $startFrom }, subscribe: true, includeInitial: true) {

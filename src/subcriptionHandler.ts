@@ -7,7 +7,8 @@ import EventEmitter from "events";
  * @date 6/1/2023 - 12:04:38 PM
  *
  * @class SubscriptionHandler
- * @typedef {SubscriptionHandler}
+ * @param {string} url
+ * @param {string} authToken
  */
 class SubscriptionHandler {
   /**

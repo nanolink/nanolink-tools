@@ -6,6 +6,7 @@ import { LogSubscriptions } from "../definitions/logsubscriptions";
  * @date 6/1/2023 - 3:47:22 PM
  *
  * @class WorkHoursReceiver
+ * @param {Connection} connection - Connection handler
  */
 class WorkHoursReceiver {
   connection: Connection;

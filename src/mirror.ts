@@ -22,6 +22,9 @@ const SyncType = {
  *
  * @export
  * @class Mirror
+ * @param {string} name - Name of the mirror
+ * @param {string} query - The graphQL query to fetch the mirror (Please use the subscriptions defined in definitions )
+ * @param {SubscriptionHandler} handler - The subscription handler to use
  */
 export class Mirror {
   /**

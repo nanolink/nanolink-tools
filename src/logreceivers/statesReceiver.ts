@@ -7,12 +7,18 @@ import { LogSubscriptions } from "../definitions/logsubscriptions";
  *
  * @type {*}
  */
-const DoubleFieldsLog: any = {
+const DoubleFieldsLog: any = {  
+  /** EXTERNAL_VOLTAGE */
   EXTERNAL_VOLTAGE: "EXTERNAL_VOLTAGE",
+  /** TOTAL_ODOMETER */
   TOTAL_ODOMETER: "TOTAL_ODOMETER",
+  /** UPTIME */
   UPTIME: "UPTIME",
+  /** INTERNAL_VOLTAGE */
   INTERNAL_VOLTAGE: "INTERNAL_VOLTAGE",
+  /** INITIAL_ODOMETER */
   INITIAL_ODOMETER: "INITIAL_ODOMETER",
+  /** CALCULATED_ODOMETER */
   CALCULATED_ODOMETER: "CALCULATED_ODOMETER",
 };
 
@@ -23,9 +29,13 @@ const DoubleFieldsLog: any = {
  * @type {*}
  */
 const IntFieldsLog: any = {
+  /** TEMPERATURE */
   TEMPERATURE: "TEMPERATURE",
+  /** BATTERY_LEVEL */
   BATTERY_LEVEL: "BATTERY_LEVEL",
+  /** NANO_LINKS_FOUND */
   NANO_LINKS_FOUND: "NANO_LINKS_FOUND",
+  /** ALL_TAGS_FOUND */
   ALL_TAGS_FOUND: "ALL_TAGS_FOUND",
 };
 
@@ -36,10 +46,15 @@ const IntFieldsLog: any = {
  * @type {*}
  */
 const BoolFieldsLog: any = {
+  /** MOVEMENT */
   MOVEMENT: "MOVEMENT",
+  /** IGNITION */
   IGNITION: "IGNITION",
+  /** GPS_ENABLED */
   GPS_ENABLED: "GPS_ENABLED",
+  /** BLUETOOTH_ENABLED */
   BLUETOOTH_ENABLED: "BLUETOOTH_ENABLED",
+  /** BLUETOOTH_FAILURE */
   BLUETOOTH_FAILURE: "BLUETOOTH_FAILURE",
 };
 
@@ -50,6 +65,7 @@ const BoolFieldsLog: any = {
  * @type {*}
  */
 const LongFieldsLog: any = {
+  /** ACTIVE_COUNTER */
   ACTIVE_COUNTER: "ACTIVE_COUNTER",
 };
 /**
@@ -70,6 +86,15 @@ const AnyFieldsLog: any = {
  * @date 6/1/2023 - 8:10:51 AM
  *
  * @class LogStateReceiverBase
+ * @param {Connection} connection - The connection handler
+ * @param {boolean} subscribe- Send updates if changes occur
+ * @param {boolean} includeInitial - Include initial data
+ * @param {string[]} trackerVIDs - array of tracker VIDs
+ * @param {string} field - State field
+ * @param {?string} [startTime] - Start time
+ * @param {?string} [endTime] - End time
+ * @param {?string} [fromId] - Start id
+ * @param {?number} [limit] - Limit no. of docs (if not set then all)
  */
 class LogStateReceiverBase {
   /**
@@ -166,9 +191,7 @@ class LogStateReceiverBase {
     if (!this.connection.logSubscriptionHandler) {
       this.connection.connectLog(false);
     }
-    /**
-     * Setup for paging to not flood the client with data
-     */
+    // Setup for paging to not flood the client with data
     // Make copy of filter to be able to manipulate without destroying
     let vars = { ...this.variables };
     let cursor = { ...this.variables.filter.cursor };
@@ -222,6 +245,15 @@ class LogStateReceiverBase {
  * @date 6/1/2023 - 12:47:26 PM
  *
  * @class LogStateReceiverBool
+ * @param {Connection} connection - The connection handler
+ * @param {boolean} subscribe- Send updates if changes occur
+ * @param {boolean} includeInitial - Include initial data
+ * @param {string[]} trackerVIDs - array of tracker VIDs
+ * @param {string} field - State field
+ * @param {?string} [startTime] - Start time
+ * @param {?string} [endTime] - End time
+ * @param {?string} [fromId] - Start id
+ * @param {?number} [limit] - Limit no. of docs (if not set then all)
  * @extends {LogStateReceiverBase}
  */
 class LogStateReceiverBool extends LogStateReceiverBase {
@@ -281,6 +313,15 @@ class LogStateReceiverBool extends LogStateReceiverBase {
  * @date 6/1/2023 - 12:47:51 PM
  *
  * @class LogStateReceiverInt
+ * @param {Connection} connection - The connection handler
+ * @param {boolean} subscribe- Send updates if changes occur
+ * @param {boolean} includeInitial - Include initial data
+ * @param {string[]} trackerVIDs - array of tracker VIDs
+ * @param {string} field - State field
+ * @param {?string} [startTime] - Start time
+ * @param {?string} [endTime] - End time
+ * @param {?string} [fromId] - Start id
+ * @param {?number} [limit] - Limit no. of docs (if not set then all)
  * @extends {LogStateReceiverBase}
  */
 class LogStateReceiverInt extends LogStateReceiverBase {
@@ -340,6 +381,15 @@ class LogStateReceiverInt extends LogStateReceiverBase {
  * @date 6/1/2023 - 8:10:51 AM
  *
  * @class LogStateReceiverDouble
+ * @param {Connection} connection - The connection handler
+ * @param {boolean} subscribe- Send updates if changes occur
+ * @param {boolean} includeInitial - Include initial data
+ * @param {string[]} trackerVIDs - array of tracker VIDs
+ * @param {string} field - State field
+ * @param {?string} [startTime] - Start time
+ * @param {?string} [endTime] - End time
+ * @param {?string} [fromId] - Start id
+ * @param {?number} [limit] - Limit no. of docs (if not set then all)
  * @extends {LogStateReceiverBase}
  */
 class LogStateReceiverDouble extends LogStateReceiverBase {
@@ -399,6 +449,15 @@ class LogStateReceiverDouble extends LogStateReceiverBase {
  * @date 6/1/2023 - 12:49:29 PM
  *
  * @class LogStateReceiverLong
+ * @param {Connection} connection - The connection handler
+ * @param {boolean} subscribe- Send updates if changes occur
+ * @param {boolean} includeInitial - Include initial data
+ * @param {string[]} trackerVIDs - array of tracker VIDs
+ * @param {string} field - State field
+ * @param {?string} [startTime] - Start time
+ * @param {?string} [endTime] - End time
+ * @param {?string} [fromId] - Start id
+ * @param {?number} [limit] - Limit no. of docs (if not set then all)
  * @extends {LogStateReceiverBase}
  */
 class LogStateReceiverLong extends LogStateReceiverBase {
@@ -458,6 +517,15 @@ class LogStateReceiverLong extends LogStateReceiverBase {
  * @date 6/1/2023 - 12:53:38 PM
  *
  * @class LogStateReceiverAny
+ * @param {Connection} connection - The connection handler
+ * @param {boolean} subscribe- Send updates if changes occur
+ * @param {boolean} includeInitial - Include initial data
+ * @param {string[]} trackerVIDs - array of tracker VIDs
+ * @param {string} field - State field
+ * @param {?string} [startTime] - Start time
+ * @param {?string} [endTime] - End time
+ * @param {?string} [fromId] - Start id
+ * @param {?number} [limit] - Limit no. of docs (if not set then all)
  * @extends {LogStateReceiverBase}
  */
 class LogStateReceiverAny extends LogStateReceiverBase {

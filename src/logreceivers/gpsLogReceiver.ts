@@ -6,6 +6,9 @@ import { LogSubscriptions } from "../definitions/logsubscriptions";
  * @date 6/1/2023 - 12:45:27 PM
  *
  * @class GPSLogReceiver
+ * @param {Connection} connection - The connection handler
+ * @param {String} from - ObjectId to start from. Can be used to get incremental changes
+ * @param {String} startFrom - Date and time where the selection should start (RFC 3339) 
  */
 class GPSLogReceiver {
   /**

@@ -7,6 +7,8 @@ import { HTTPAGENT } from "./js/common";
  *
  * @export
  * @class QueryHandler
+ * @param {string} url - Url of coreserver
+ * @param {string} apiToken - The API token received from nanolink
  */
 export class QueryHandler {
   /**

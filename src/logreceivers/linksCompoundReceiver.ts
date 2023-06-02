@@ -6,6 +6,20 @@ import { LogSubscriptions } from "../definitions/logsubscriptions";
  * @date 6/1/2023 - 8:14:25 AM
  *
  * @class LogLinksReceiver
+ * @param {Connection} connection - The connection handler
+ * @param {boolean} subscribe - Keep the subscription running, otherwise stops when initialData is received
+ * @param {boolean} includeInitial - Include initial data
+ * @param {boolean} includeGPS - Include GPS information for the link
+ * @param {boolean} includeRSSI - Include RSSI (Received signal strengh indicator) for the link
+ * @param {boolean} includeTrackerReference - Include the trackers reference (Where it is attatched)
+ * @param {boolean} excludeNullGPS - Don't return null GPS (Where the receiver reported i could not get a GPS fix)
+ * @param {string} receiverVID - Filter on a specific receiver (GPS gate, Lan gate, Mesh gate). If null then all
+ * @param {string} transmitterVID - Filter on a specific transmitter (Nanolink). If null then all
+ * @param {string[]} trackers - Filter on specific trackers (Both receivers and transmitters). If null then all
+ * @param {string} startTime - Start date time (RFC 3389)
+ * @param {string} endTime - End date time (RFC 3389)
+ * @param {string} fromId - ObjectId to start from. Can be used to get incremental changes
+ * @param {number} limit - Limit the amount returned from initial data.
  */
 class LogLinksReceiver {
   /**
@@ -106,9 +120,8 @@ class LogLinksReceiver {
     if (!this.connection.logSubscriptionHandler) {
       this.connection.connectLog(false);
     }
-    /**
-     * Setup for paging to not flood the client with data
-     */
+    
+    // Setup for paging to not flood the client with data     
     // Make copy of filter to be able to manipulate without destroying
     let vars = { ...this.variables };
     let cursor = { ...this.variables.filter.cursor };

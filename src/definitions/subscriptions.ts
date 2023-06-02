@@ -1,44 +1,14 @@
-/**
- * Common field for most subscriptions
- * @date 6/1/2023 - 12:42:23 PM
- *
- * @type {string}
- */
+// Common field for most subscriptions
 const commonFields: string = "id:idStr version createdDateTime";
-/**
- * Common fields for a reference
- * @date 6/1/2023 - 12:42:23 PM
- *
- * @type {string}
- */
+// Common fields for a reference
 const commonReferenceFields: string = "groupId groupName groupPath labels";
-/**
- * Fields on service log
- * @date 6/1/2023 - 12:42:23 PM
- *
- * @type {string}
- */
+// Fields on service log
 const lastLogFields:string = "id eventCode stamp serviceDataId userId comment";
-/**
- * Service data fields
- * @date 6/1/2023 - 12:42:23 PM
- *
- * @type {string}
- */
+// Service data fields
 const serviceDataCommonFields: string = `id createdDateTime servicePlanId userId lastLog {${lastLogFields}}`;
-/**
- * Common fields on the outer subscription document result
- * @date 6/1/2023 - 12:42:23 PM
- *
- * @type {string}
- */
+// Common fields on the outer subscription document result
 const mCommonFields: string = "type total deleteId deleteVersion";
-/**
- * Common service fields
- * @date 6/1/2023 - 12:42:23 PM
- *
- * @type {string}
- */
+// Common service fields
 const mServiceCommonFields:string = `name description createdDate createdBy ${commonFields}`;
 
 /**
@@ -48,6 +18,9 @@ const mServiceCommonFields:string = `name description createdDate createdBy ${co
  * @type {*}
  */
 const Subscriptions: any = {
+  /**
+   * Reference query used for reference mirror
+   */
   references: `
       subscription References($version:Int!) {
           mreference_getbulk(version: $version, subscribe:true)
@@ -130,6 +103,9 @@ const Subscriptions: any = {
       }
   }
   `,
+  /**
+   * Reference query used for tracker mirror
+   */
   trackers: `
     subscription Trackers($version:Int!) {
         mtrackers_getbulk(version: $version, subscribe:true)
@@ -153,6 +129,9 @@ const Subscriptions: any = {
         }
     }
   `,
+  /**
+   * Groups query used for groups mirror
+   */
   groups: `
      subscription Groups($version:Int!)
      {
@@ -170,6 +149,9 @@ const Subscriptions: any = {
           }
      }
   `,
+  /**
+   * Sevice plan query used for servicePlans mirror
+   */
   servicePlans: `
      subscription Service($version: Int!)
      {
@@ -213,6 +195,9 @@ const Subscriptions: any = {
          }
      }
   `,
+  /**
+   * Tracker links query used for trackerLinks mirror
+   */
   trackerLinks: `
      subscription BLELinks($opVersion: String)
      {
@@ -230,6 +215,9 @@ const Subscriptions: any = {
          }
      }
   `,
+  /**
+   * Referenc links query used for referenceLinks mirror
+   */
   referenceLinks: `
      subscription ReferenceLink($version: Int!, $opVersion: String)
      {
@@ -248,7 +236,9 @@ const Subscriptions: any = {
           }
      }      
   `,
-
+  /**
+   * Reports query used for reports mirror
+   */
   reports: `
      subscription Reports($version: Int!) {
           mreports_getreport(version: $version, subscribe: true)
@@ -264,6 +254,9 @@ const Subscriptions: any = {
           }
      }
      `,
+  /**
+   * Jobs query used for jobs mirror
+   */
   jobs: `subscription jobs($version: Int!) {  
       mjob_get(version:$version, subscribe: true) {
           ${mCommonFields}
@@ -335,6 +328,9 @@ const Subscriptions: any = {
  * @type {*}
  */
 const TempSubscriptions: any = {
+  /**
+   * linksconnected temp. mirror query
+   */
   linkconnected: `subscription linkconnected {
         otrackers_linkconnectedbulk(subscribe: true, includeInitial: true) {
           type
@@ -347,6 +343,9 @@ const TempSubscriptions: any = {
           deleteVersion
         }
     }`,
+  /**
+   * connected temp. mirror query
+   */
   connected: `subscription connected {
         otrackers_connectedbulk(subscribe: true, includeInitial: true) {
           type
@@ -359,6 +358,9 @@ const TempSubscriptions: any = {
           deleteVersion
         }
     }`,
+  /**
+   * voltage temp. mirror query
+   */
   voltage: `subscription voltage {
         otrackers_infoanybulk(subscribe: true, includeInitial: true, fields:[EXTERNAL_VOLTAGE]) {
             type
@@ -373,6 +375,9 @@ const TempSubscriptions: any = {
             }
         }
   }`,
+  /**
+   * internalvoltage temp. mirror query
+   */
   internalvoltage: `subscription internalvoltage {
         otrackers_infoanybulk(subscribe: true, includeInitial: true, fields:[INTERNAL_VOLTAGE, BATTERY_LEVEL]) {
             type
@@ -387,6 +392,9 @@ const TempSubscriptions: any = {
             }
         }
   }`,
+  /**
+   * temperature temp. mirror query
+   */
   temperature: `subscription temperature {
         otrackers_infoanybulk(subscribe: true, includeInitial: true, fields:[TEMPERATURE]) {
             type
@@ -400,6 +408,9 @@ const TempSubscriptions: any = {
             }
         }
   }`,
+  /**
+   * activecounter temp. mirror query
+   */
   activecounter: `subscription activecounter {
         otrackers_infoanybulk(subscribe: true, includeInitial: true, fields:[ACTIVE_COUNTER]) {
             type
@@ -413,6 +424,9 @@ const TempSubscriptions: any = {
             }
         }
   }`,
+  /**
+   * speed temp. mirror query
+   */
   speed: `subscription speed {
     otrackers_getpositionsbulk(subscribe: true, includeInitial: true) {
         type

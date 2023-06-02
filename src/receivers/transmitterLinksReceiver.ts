@@ -6,6 +6,7 @@ import { StateSubscriptions } from "../definitions/stateSubscriptions";
  * @date 6/1/2023 - 1:36:21 PM
  *
  * @class TransmitterLinksReceiver
+ * @param {Connection} connection - Connection handler
  */
 class TransmitterLinksReceiver {
   /**
