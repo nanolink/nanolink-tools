@@ -6,23 +6,23 @@ import { SrvRecord } from "dns";
  * Double state fields
  * @date 6/1/2023 - 1:17:43 PM
  *
- * @type {*}
+ * @enum {string}
  */
-const DoubleFields: any = {
+enum DoubleFields  {
   /** EXTERNAL_VOLTAGE */
-  EXTERNAL_VOLTAGE: "EXTERNAL_VOLTAGE",
+  EXTERNAL_VOLTAGE = "EXTERNAL_VOLTAGE",
   /** TOTAL_ODOMETER */
-  TOTAL_ODOMETER: "TOTAL_ODOMETER",
+  TOTAL_ODOMETER = "TOTAL_ODOMETER",
   /** UPTIME */
-  UPTIME: "UPTIME",
+  UPTIME = "UPTIME",
   /** INTERNAL_VOLTAGE */
-  INTERNAL_VOLTAGE: "INTERNAL_VOLTAGE",
+  INTERNAL_VOLTAGE = "INTERNAL_VOLTAGE",
   /** INITIAL_ODOMETER */
-  INITIAL_ODOMETER: "INITIAL_ODOMETER",
+  INITIAL_ODOMETER = "INITIAL_ODOMETER",
   /** CALCULATED_ODOMETER */
-  CALCULATED_ODOMETER: "CALCULATED_ODOMETER",
+  CALCULATED_ODOMETER = "CALCULATED_ODOMETER",
   /** BATTERY_PERCENT */
-  BATTERY_PERCENT: "BATTERY_PERCENT",
+  BATTERY_PERCENT = "BATTERY_PERCENT",
 };
 /**
  * Receiver for double states
@@ -30,7 +30,7 @@ const DoubleFields: any = {
  *
  * @class StatesReceiverDouble
  * @param {Connection} connection - The connection handler
- * @param {string} field - double field @see {@link DoubleFields}
+ * @param {DoubleFields} field - double field
  * @param {?string[]} [trackers] - tracker vid's
  */
 class StatesReceiverDouble {
@@ -61,13 +61,10 @@ class StatesReceiverDouble {
    *
    * @constructor
    * @param {Connection} connection - The connection handler
-   * @param {string} field - double field @see {@link DoubleFields}
+   * @param {DoubleFields} field - double field
    * @param {?string[]} [trackers] - tracker vid's
    */
-  constructor(connection: Connection, field: string, trackers?: string[]) {
-    if (DoubleFields[field] == undefined) {
-      throw `field: ${field} is not a double field`;
-    }
+  constructor(connection: Connection, field: DoubleFields, trackers?: string[]) {
     this.connection = connection;
     this.field = field;
     this.trackers = trackers;
@@ -111,16 +108,19 @@ class StatesReceiverDouble {
 }
 /**
  * Int states
+ * @date 6/5/2023 - 9:43:12 AM
+ *
+ * @enum {string}
  */
-const IntFields: any = {
+enum IntFields {
   /** TEMPERATURE */
-  TEMPERATURE: "TEMPERATURE",
+  TEMPERATURE = "TEMPERATURE",
   /** BATTERY_LEVEL */
-  BATTERY_LEVEL: "BATTERY_LEVEL",
+  BATTERY_LEVEL = "BATTERY_LEVEL",
   /** NANO_LINKS_FOUND */
-  NANO_LINKS_FOUND: "NANO_LINKS_FOUND",
+  NANO_LINKS_FOUND = "NANO_LINKS_FOUND",
   /** ALL_TAGS_FOUND */
-  ALL_TAGS_FOUND: "ALL_TAGS_FOUND",
+  ALL_TAGS_FOUND = "ALL_TAGS_FOUND",
 };
 /**
  * Integer state fields
@@ -128,7 +128,7 @@ const IntFields: any = {
  *
  * @class StatesReceiverInt
  * @param {Connection} connection - The connection handler
- * @param {string} field - Integer field @see {@link IntFields}
+ * @param {IntFields} field - Integer field
  * @param {?string[]} [trackers] - tracker vid's
  */
 class StatesReceiverInt {
@@ -159,13 +159,10 @@ class StatesReceiverInt {
    *
    * @constructor
    * @param {Connection} connection - The connection handler
-   * @param {string} field - Integer field @see {@link IntFields}
+   * @param {string} field - Integer field
    * @param {?string[]} [trackers] - tracker vid's
    */
-  constructor(connection: Connection, field: string, trackers?: string[]) {
-    if (IntFields[field] == undefined) {
-      throw `field: ${field} is not a int field`;
-    }
+  constructor(connection: Connection, field: IntFields, trackers?: string[]) {
     this.connection = connection;
     this.field = field;
     this.trackers = trackers;
@@ -201,18 +198,21 @@ class StatesReceiverInt {
 }
 /**
  * Bool states
+ * @date 6/5/2023 - 9:45:27 AM
+ *
+ * @enum {string}
  */
-const BoolFields: any = {
+enum BoolFields  {
   /** MOVEMENT */
-  MOVEMENT: "MOVEMENT",
+  MOVEMENT = "MOVEMENT",
   /** IGNITION */
-  IGNITION: "IGNITION",
+  IGNITION = "IGNITION",
   /** GPS_ENABLED */
-  GPS_ENABLED: "GPS_ENABLED",
+  GPS_ENABLED = "GPS_ENABLED",
   /** BLUETOOTH_ENABLED */
-  BLUETOOTH_ENABLED: "BLUETOOTH_ENABLED",
+  BLUETOOTH_ENABLED = "BLUETOOTH_ENABLED",
   /** BLUETOOTH_FAILURE */
-  BLUETOOTH_FAILURE: "BLUETOOTH_FAILURE",
+  BLUETOOTH_FAILURE = "BLUETOOTH_FAILURE",
 };
 /**
  * Bool states
@@ -220,7 +220,7 @@ const BoolFields: any = {
  *
  * @class StatesReceiverBool
  * @param {Connection} connection - The connection handler
- * @param {string} field - Boolean field @see {@link BoolFields}
+ * @param {BoolFields} field - Boolean field
  * @param {?string[]} [trackers] - tracker vid's
  */
 class StatesReceiverBool {
@@ -251,13 +251,10 @@ class StatesReceiverBool {
    *
    * @constructor
    * @param {Connection} connection - The connection handler
-   * @param {string} field - Boolean field @see {@link BoolFields}
+   * @param {BoolFields} field - Boolean field
    * @param {?string[]} [trackers] - tracker vid's
    */
-  constructor(connection: Connection, field: string, trackers?: string[]) {
-    if (BoolFields[field] == undefined) {
-      throw `field: ${field} is not a bool field`;
-    }
+  constructor(connection: Connection, field: BoolFields, trackers?: string[]) {
     this.connection = connection;
     this.field = field;
     this.trackers = trackers;
@@ -294,9 +291,9 @@ class StatesReceiverBool {
 /**
  * Long states
  */
-const LongFields: any = {
+enum LongFields {
   /** ACTIVE_COUNTER */
-  ACTIVE_COUNTER: "ACTIVE_COUNTER",
+  ACTIVE_COUNTER = "ACTIVE_COUNTER",
 };
 /**
  * Long states
@@ -304,7 +301,7 @@ const LongFields: any = {
  *
  * @class StatesReceiverLong
  * @param {Connection} connection - The connection handler
- * @param {string} field - long field @see {@link LongFields}
+ * @param {LongFields} field - long field
  * @param {?string[]} [trackers] - tracker vid's
  */
 class StatesReceiverLong {
@@ -335,13 +332,10 @@ class StatesReceiverLong {
    *
    * @constructor
    * @param {Connection} connection - The connection handler
-   * @param {string} field - Long field @see {@link LongFields}
+   * @param {LongFields} field - Long field
    * @param {?string[]} [trackers] - tracker vid's
  */
-  constructor(connection: Connection, field: string, trackers?: string[]) {
-    if (LongFields[field] == undefined) {
-      throw `field: ${field} is not a long field`;
-    }
+  constructor(connection: Connection, field: LongFields, trackers?: string[]) {
     this.connection = connection;
     this.field = field;
     this.trackers = trackers;
@@ -378,19 +372,14 @@ class StatesReceiverLong {
 /**
  * Any states
  */
-const AnyFields: any = {
-  ...DoubleFields,
-  ...IntFields,
-  ...BoolFields,
-  ...LongFields,
-};
+type AnyFields =  DoubleFields | IntFields | BoolFields | LongFields
 /**
  * Subscribe to any field. Note that the value returned is always a string
  * @date 6/1/2023 - 1:17:12 PM
  *
  * @class StatesReceiverAny
  * @param {Connection} connection - The connection handler
- * @param {string} field - Any field @see {@link AnyFields}
+ * @param {AnyFields} field - Any field
  * @param {?string[]} [trackers] - tracker vid's
  */
 class StatesReceiverAny {
@@ -421,13 +410,10 @@ class StatesReceiverAny {
    *
    * @constructor
    * @param {Connection} connection - The connection handler
-   * @param {string} field - Any field @see {@link AnyFields}
+   * @param {AnyFields} field - Any field
    * @param {?string[]} [trackers] - tracker vid's
    */
-  constructor(connection: Connection, field: string, trackers?: string[]) {
-    if (AnyFields[field] == undefined) {
-      throw `field: ${field} is not a field`;
-    }
+  constructor(connection: Connection, field: AnyFields, trackers?: string[]) {
     this.connection = connection;
     this.field = field;
     this.connection = connection;

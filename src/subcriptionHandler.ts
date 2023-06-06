@@ -232,7 +232,7 @@ class SubscriptionHandler {
         if (r.done) {
           return { value: null, done: true };
         } else {
-          return { value: map(r.value), done: true };
+          return { value: map(r.value), done: false };
         }
       },
       return() {
@@ -278,7 +278,7 @@ class SubscriptionHandler {
                 this.buffer.push({ type: "UPDATED", data: v });
               }
             } else {
-              return { value: mapped };
+              return { value: mapped, done: false };
             }
             if (this.buffer.length) {
               return {
