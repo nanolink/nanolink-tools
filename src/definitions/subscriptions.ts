@@ -209,7 +209,7 @@ const Subscriptions: any = {
                  createdDateTime: creationTime
                  receiverVID
                  transmitterVID
-                 version
+                 opVersion
                  deleted
              }
          }
@@ -230,7 +230,7 @@ const Subscriptions: any = {
                   createdDateTime: creationTime
                   referenceId1
                   referenceId2
-                  version
+                  opVersion
                   deleted
               }
           }
