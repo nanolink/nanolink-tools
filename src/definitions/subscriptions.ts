@@ -84,6 +84,28 @@ const Subscriptions: any = {
                           longitude
                           latitude
                       }
+                      area {
+                        sizeX
+                        sizeY
+                        onMap {
+                            latitude
+                            longitude
+                            bearing
+                        }
+                        gates {
+                            antennaType
+                            vID
+                            calibrationVID
+                            calibrationDistance
+                            fallbackTxPower
+                            overrideN
+                            x
+                            y
+                            vX
+                            vY
+                            shouldAtLeastByFoundBy
+                        }
+                      }
                       documents {
                         id name url createdDate mimeType fileName
                       }
@@ -209,8 +231,10 @@ const Subscriptions: any = {
                  createdDateTime: creationTime
                  receiverVID
                  transmitterVID
-                 version
+                 rSSI
+                 opVersion
                  deleted
+                 disabled
              }
          }
      }
@@ -320,6 +344,90 @@ const Subscriptions: any = {
           } 
       }  
     }`,
+  gps: `
+    subscription getpositionbulk($opVersion: String) {
+        otrackers_getpositionsbulk(
+        includeInitial: true
+        subscribe: true
+        opversion: $opVersion
+        ) {
+        type
+        total
+        deleteId
+        data {
+            opVersion
+            stamp
+            locationInfo {
+            date
+            speed
+            bearing
+            accuracy
+            altitude
+            longitude
+            latitude
+            } 
+            isFixed
+            id:trackerVID
+        }
+        deleteVersion
+        }
+    }`,    
+    lostTransmitters: 
+    `subscription lostTransmitters($opVersion: String) {
+        otrackers_losttransmitters(subscribe: true, opversion: $opVersion) {
+          type
+          total
+          deleteId
+          data {
+            id:transmitterVID
+            opVersion
+            lostBy {
+              transmitterVID
+              receiverVID
+              startTime
+              endTime
+              locationInfo {
+                date
+                speed
+                bearing
+                accuracy
+                altitude
+                longitude
+                latitude
+              }
+              opVersion
+              receiverTrackerType
+            }
+          }
+          deleteVersion
+        }
+    }`,
+    areaposition: `
+    subscription areaposition($opVersion: String) {
+      otrackers_areapositions(
+        opversion: $opVersion
+        subscribe: true
+      ) {
+        type
+        total
+        deleteId
+        data {
+          id
+          siteId
+          trackerVID
+          opVersion
+          stamp
+          x
+          y
+          gPSPosition {
+            latitude
+            longitude
+          } 
+        }
+        deleteVersion
+      }
+    }
+   `
 };
 /**
  * Temporary subscriptions on the coreserver
@@ -442,7 +550,7 @@ const TempSubscriptions: any = {
         }
     }
   }
-  `,
+  `
 };
 
 export { Subscriptions, TempSubscriptions };
