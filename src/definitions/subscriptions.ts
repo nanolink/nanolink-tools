@@ -320,6 +320,33 @@ const Subscriptions: any = {
           } 
       }  
     }`,
+    gps: `subscription getpositionbulk($opVersion: String) {
+      otrackers_getpositionsbulk(
+        includeInitial: true
+        subscribe: true
+        opversion: $opVersion
+      ) {
+        type
+        total
+        deleteId
+        data {
+          opVersion
+          stamp
+          locationInfo {
+            date
+            speed
+            bearing
+            accuracy
+            altitude
+            longitude
+            latitude
+          } 
+          isFixed
+          id:trackerVID
+        }
+        deleteVersion
+      }
+    }`
 };
 /**
  * Temporary subscriptions on the coreserver
