@@ -201,13 +201,14 @@ const Subscriptions: any = {
   trackerLinks: `
      subscription BLELinks($opVersion: String)
      {
-         otrackers_getlinks(opversion: $opVersion, subscribe: true)
+         otrackers_getlinks(opversion: $opVersion, subscribe: true, subscriberssiupdates: true)
          {
              ${mCommonFields}
              data {
                  id
                  createdDateTime: creationTime
                  receiverVID
+                 rSSI
                  transmitterVID
                  opVersion
                  deleted
