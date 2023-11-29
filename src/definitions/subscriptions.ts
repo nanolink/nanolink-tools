@@ -5,7 +5,7 @@ const commonReferenceFields: string = "groupId groupName groupPath labels";
 // Fields on service log
 const lastLogFields:string = "id eventCode stamp serviceDataId userId comment";
 // Service data fields
-const serviceDataCommonFields: string = `id createdDateTime servicePlanId userId lastLog {${lastLogFields}}`;
+const serviceDataCommonFields: string = `id createdDateTime servicePlanId userId lastLog {${lastLogFields}} lastServiceDate`;
 // Common fields on the outer subscription document result
 const mCommonFields: string = "type total deleteId deleteVersion";
 // Common service fields
@@ -44,7 +44,7 @@ const Subscriptions: any = {
                       serviceData {
                           __typename
                           ... on QMServiceDataOneshot { ${serviceDataCommonFields} due dueSlackInDays }
-                          ... on QMServiceDataPeriodic { ${serviceDataCommonFields}  startDate lastServiceDate period intervalType due dueSlackInDays }
+                          ... on QMServiceDataPeriodic { ${serviceDataCommonFields}  startDate period intervalType due dueSlackInDays }
                           ... on QMServiceDataWarranty { ${serviceDataCommonFields}  purchaseDate warrantyInMonths due dueSlackInDays }
                           ... on QMServiceDataTrackerStateInt { ${serviceDataCommonFields} dueSlackSeconds : dueSlack nextDueSeconds : nextDue trackerVID }
                           ... on QMServiceDataTrackerStateDouble { ${serviceDataCommonFields} dueSlackKM : dueSlack nextDueKM : nextDue trackerVID }
@@ -67,7 +67,7 @@ const Subscriptions: any = {
                       serviceData {
                           __typename
                           ... on QMServiceDataOneshot { ${serviceDataCommonFields} due dueSlackInDays }
-                          ... on  QMServiceDataPeriodic { ${serviceDataCommonFields}  startDate lastServiceDate period intervalType due dueSlackInDays }
+                          ... on  QMServiceDataPeriodic { ${serviceDataCommonFields}  startDate period intervalType due dueSlackInDays }
                           ... on  QMServiceDataWarranty { ${serviceDataCommonFields}  purchaseDate warrantyInMonths due dueSlackInDays }
                           ... on QMServiceDataTrackerStateInt { ${serviceDataCommonFields} dueSlackSeconds : dueSlack nextDueSeconds : nextDue trackerVID }
                           ... on QMServiceDataTrackerStateDouble { ${serviceDataCommonFields} dueSlackKM : dueSlack nextDueKM : nextDue trackerVID }
@@ -90,7 +90,7 @@ const Subscriptions: any = {
                       serviceData {
                           __typename
                           ... on QMServiceDataOneshot { ${serviceDataCommonFields} due dueSlackInDays }
-                          ... on  QMServiceDataPeriodic { ${serviceDataCommonFields}  startDate lastServiceDate period intervalType due dueSlackInDays }
+                          ... on  QMServiceDataPeriodic { ${serviceDataCommonFields}  startDate period intervalType due dueSlackInDays }
                           ... on  QMServiceDataWarranty { ${serviceDataCommonFields}  purchaseDate warrantyInMonths due dueSlackInDays }
                           ... on QMServiceDataTrackerStateInt { ${serviceDataCommonFields} dueSlackSeconds : dueSlack nextDueSeconds : nextDue trackerVID }
                           ... on QMServiceDataTrackerStateDouble { ${serviceDataCommonFields} dueSlackKM : dueSlack nextDueKM : nextDue trackerVID }
@@ -347,7 +347,33 @@ const Subscriptions: any = {
         }
         deleteVersion
       }
-    }`
+    }`,
+    trips:`subscription trips($opVersion: String) {
+        otrip_trips(opversion: $opVersion, subscribe: true) {
+          type
+          total
+          deleteId
+          data {
+            vID
+            start
+            stop
+            routeDistanceInMeters
+            opVersion
+            startPoint {
+              date
+              longitude
+              latitude
+            } 
+            endPoint {
+              date
+              longitude
+              latitude
+            }
+          }
+          deleteVersion
+        }
+      }      
+    `
 };
 /**
  * Temporary subscriptions on the coreserver

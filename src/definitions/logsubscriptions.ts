@@ -215,6 +215,46 @@ const LogSubscriptions = {
     `;
   },
   /** 
+   *  Trips with odometer, gps and link information (v2)
+   */
+  trips2(
+    includeLinks?: boolean,
+    includeGPS?: boolean,
+    includeOdometer?: boolean
+  ): string {
+    return `
+      subscription trackerinfo($trackerVIDs:[String], $start:DateTime, $end: DateTime, $gpsOption: GPSOption, $odometerOption: OdometerOption, $linkOption: LinkOption, $includeInitial:Boolean, $subscribe: Boolean) {
+          trip_info2(filter: { trackerVIDs: $trackerVIDs, start: $start, end: $end, gPSOption: $gpsOption, odometerOption: $odometerOption, linkOption: $linkOption }, includeInitial:$includeInitial, subscribe:$subscribe) {
+              type 
+              data {
+                __typename
+                ... on QTrip 
+                {
+                  trackerVID
+                  start
+                  end: stop
+                }
+                ${
+                  includeOdometer
+                    ? "... on QOdometerTripInfo { createdTime value }"
+                    : ""
+                }
+                ${
+                  includeGPS
+                    ? `... on QGPSTripInfo { createdTime longitude latitude speed }`
+                    : ""
+                }
+                ${
+                  includeLinks
+                    ? `... on QLinkTripInfo { transmitterVID start end }`
+                    : ""
+                }
+              }
+          }
+      }
+    `;
+  },
+  /** 
    *  Get work hours. How long a piece of equipment has been active
    */
   workhours(

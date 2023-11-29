@@ -1,6 +1,6 @@
 {
   "name": "@nanolink/nanolink-tools",
-  "version": "1.0.52",
+  "version": "1.0.56",
   "description": "Toolbox for integrating with nanolink infrastructure",
   "main": "index.js",
   "scripts": {
