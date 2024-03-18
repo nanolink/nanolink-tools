@@ -298,6 +298,30 @@ export class Connection {
       );
     }
   }
+
+  /**
+   * Run graphql query on the core server with error checking
+   * @date 12/7/2023 - 9:37:55 AM
+   *
+   * @async
+   * @param {string} query - The graph ql query
+   * @param {?*} [variables] - Variables for the query
+   * @returns {Promise<any>} - Result from query
+   */
+  async query(query: string, variables?: any): Promise<any> {
+    let result = await this.queryHandler.postQuery(this.queryHandler.url, query, variables, 20000, this.queryHandler.token);
+    if (result.data?.errors) {
+      throw result.data?.errors[0];
+    }
+    if (result.data?.data) {
+      let resultData = result.data.data[Object.keys(result.data.data)[0]]
+      if (resultData.errors && resultData.errors.length && resultData.errors[0]) {
+        throw resultData.errors[0]
+      }
+      return resultData
+    }
+    return null;
+  }
   /**
    * Retrieve an auto updated mirror from the coreserver
    * @date 6/1/2023 - 8:53:29 AM

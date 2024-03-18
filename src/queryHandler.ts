@@ -83,7 +83,7 @@ export class QueryHandler {
     timeout?: number,
     token?: string
   ) {
-    token = this.token ?? token;
+    token = token ?? this.token;
     let headers;
     if (token) {
       headers = {

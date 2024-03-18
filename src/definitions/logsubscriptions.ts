@@ -223,14 +223,17 @@ const LogSubscriptions = {
     includeOdometer?: boolean
   ): string {
     return `
-      subscription trackerinfo($trackerVIDs:[String], $start:DateTime, $end: DateTime, $gpsOption: GPSOption, $odometerOption: OdometerOption, $linkOption: LinkOption, $includeInitial:Boolean, $subscribe: Boolean) {
-          trip_info2(filter: { trackerVIDs: $trackerVIDs, start: $start, end: $end, gPSOption: $gpsOption, odometerOption: $odometerOption, linkOption: $linkOption }, includeInitial:$includeInitial, subscribe:$subscribe) {
+      subscription trackerinfo($trackerVIDs:[String], $start:DateTime, $end: DateTime, $gpsOption: GPSOption, $odometerOption: OdometerOption, $linkOption: LinkOption, $from: ObjectId, $includeInitial:Boolean, $subscribe: Boolean) {
+          trip_info2(filter: { trackerVIDs: $trackerVIDs, start: $start, end: $end, gPSOption: $gpsOption, odometerOption: $odometerOption, linkOption: $linkOption, cursor: { from: $from, count: 1000000 } }, includeInitial:$includeInitial, subscribe:$subscribe) {
               type 
               data {
                 __typename
                 ... on QTrip 
                 {
+                  id
                   trackerVID
+                  startStamp
+                  stopStamp
                   start
                   end: stop
                 }

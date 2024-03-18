@@ -33,22 +33,24 @@ class TripReceiver2 {
    *
    * @async
    * @param {?boolean} [includeLinks] - Include what the receiver has links to
-   * @param {?boolean} [includeGPS] - Include gps points in the link timerange
+   * @param {?string} [gpsOption] - NONE, START_AND_END, ALL
    * @param {?boolean} [includeOdometer] - Include odemeter values
    * @param {?string[]} [trackerVIDs] - Filter receivers. If null then all
    * @param {?string} [startTime] - Start time
    * @param {?string} [endTime] - End time
+   * @param {?string} [idFrom] - Id to start from
    * @param {?boolean} [includeInitial] - Include initial data
    * @param {?boolean} [subscribe] - Subcribe to changes
    * @returns {*}
    */
   async run(
     includeLinks?: boolean,
-    includeGPS?: boolean,
+    gpsOption?: string,
     includeOdometer?: boolean,
     trackerVIDs?: string[],
     startTime?: string,
     endTime?: string,
+    idFrom?: string,
     includeInitial?: boolean,
     subscribe?: boolean
   ) {
@@ -56,14 +58,15 @@ class TripReceiver2 {
       await this.connection.connectLog(true);
     }
     let iter = await this.connection.subscribelog(
-      LogSubscriptions.trips2(includeLinks, includeGPS, includeOdometer),
+      LogSubscriptions.trips2(includeLinks, (gpsOption ?? "NONE") != "NONE", includeOdometer),
       {
         linkOption: includeLinks ? "ALL" : "NONE",
-        gpsOption: includeGPS ? "ALL" : "NONE",
+        gpsOption: gpsOption,
         odometerOption: includeOdometer ? "START_AND_END" : "NONE",
         includeInitial: includeInitial,
         trackerVIDs: trackerVIDs,
         subscribe: subscribe,
+        from: idFrom,
         start: startTime,
         end: endTime
       }
@@ -84,7 +87,7 @@ class TripReceiver2 {
             this.onDataReceived(curTrip);
           }
           curTrip = this.makecopy_notype(r.data);
-        } else if (r.data.__typename == "QOdomterTripInfo") {
+        } else if (r.data.__typename == "QOdometerTripInfo") {
           if (curTrip.odoStart) {
             curTrip.odoEnd = this.makecopy_notype(r.data);
           } else {

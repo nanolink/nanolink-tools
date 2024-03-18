@@ -76,6 +76,166 @@ const Subscriptions: any = {
                       externalKeys
                       externalBag
                   }
+                  ... on QMVehicle {
+                    ${commonFields}
+                    ${commonReferenceFields}
+                    documents {
+                      id name url createdDate mimeType fileName
+                    }
+                    serviceData {
+                        __typename
+                        ... on QMServiceDataOneshot { ${serviceDataCommonFields} due dueSlackInDays }
+                        ... on  QMServiceDataPeriodic { ${serviceDataCommonFields}  startDate lastServiceDate period intervalType due dueSlackInDays }
+                        ... on  QMServiceDataWarranty { ${serviceDataCommonFields}  purchaseDate warrantyInMonths due dueSlackInDays }
+                        ... on QMServiceDataTrackerStateInt { ${serviceDataCommonFields} dueSlackSeconds : dueSlack nextDueSeconds : nextDue trackerVID }
+                        ... on QMServiceDataTrackerStateDouble { ${serviceDataCommonFields} dueSlackKM : dueSlack nextDueKM : nextDue trackerVID }
+                    }
+                    externalKeys
+                    externalBag
+                    deleted
+                    registration
+                    registrationStatus
+                    vin
+                    brand
+                    brandId
+                    model
+                    modelId
+                    modelYear
+                    variant
+                    variantId
+                    vVersion
+                    vVersionId
+                    bodyType
+                    usage
+                    extended {
+                      category
+                      ecTypeApproval
+                      euVariant
+                      euVersion
+                      extraEquipment
+                      firstRegistrationDate
+                      fuelType
+                      kind
+                      lastInspectionDate
+                      lastInspectionKind
+                      lastInspectionResult
+                      leasingPeriodEnd
+                      leasingPeriodStart
+                      mileage
+                      mileageAnnualAverage
+                      ncapFive
+                      registrationStatusUpdatedAt
+                      status
+                      statusUpdatedAt
+                      weight {
+                        technicalTotalWeight
+                        totalWeight
+                        vehicleWeight
+                        driveableWeightMinimum
+                        driveableWeightMaximum
+                        vValueAirSuspension
+                        vValueMechanicalSuspension
+                        roadTrainWeight
+                        couplingDevice
+                        couplingDeviceLoadMaximum
+                        trailerWithBrakesWeightMaximum
+                        trailerWithoutBrakesWeightMaximum
+                        trailerTotalWeightMaximum
+                        division
+                      }
+                      age {
+                        years
+                        months
+                      }
+                      axle {
+                        axles
+                        axleTrack
+                        pullingAxles
+                        driveShaftPressureMaximum
+                        trailerAllowedPressureMaximum
+                      }
+                      body {
+                        doors
+                        vinPlacement
+                        trackWidthFront
+                        trackWidthRear
+                        passengers
+                        seatsMinimum
+                        seatsMaximum
+                        standingPassengersMinimum
+                        standingPassengersMaximum
+                        rimsAndTires
+                        color
+                      }
+                      periodicTaxes {
+                        taxes {
+                          name
+                          amount
+                          paymentFrequency
+                        }
+                        totalAmount
+                        paymentFrequency
+                      }
+                      leasingPeriods {
+                        leasingPeriodStart
+                        leasingPeriodEnd
+                      }
+                      permits {
+                        id
+                        name
+                        comment
+                        validFrom
+                        validTo
+                      }
+                      manufacturer {
+                        name
+                        region
+                        country
+                      }
+                      drivingLicense {
+                        category
+                      }
+                      emission {
+                        co2
+                        co
+                        hcPlusNox
+                        nox
+                        particles
+                        particleFilter
+                        smokeDensity
+                        smokeDensityEngineSpeed
+                        energyClass
+                        euronorm
+                      }
+                      engine {
+                        fuelEfficiency
+                        electricityEfficiency
+                        topSpeed
+                        fuelType
+                        cylinders
+                        engineCode
+                        engineDisplacement
+                        enginePower
+                        horsepower
+                        powerToWeightRatio
+                      }
+                      equipment {
+                        id
+                        name
+                        quantity
+                      }
+                      inspections {
+                        id
+                        vehicleId
+                        registration
+                        vin
+                        date
+                        result
+                        mileage
+                        pdf
+                      }
+                    }               
+                  }
                   ... on QMSite { 
                       ${commonFields}
                       ${commonReferenceFields}

@@ -87,7 +87,7 @@ class TripReceiver {
             this.onDataReceived(curTrip);
           }
           curTrip = this.makecopy_notype(r.data);
-        } else if (r.data.__typename == "QOdomterTripInfo") {
+        } else if (r.data.__typename == "QOdometerTripInfo") {
           if (curTrip.odoStart) {
             curTrip.odoEnd = this.makecopy_notype(r.data);
           } else {
