@@ -9,7 +9,8 @@
     "builddoc": "docker build -t ntdoc -f .",
     "showdoc": "docker run -d --rm --name ntdoc -p 8083:80 ntdoc && start http://localhost:8083",
     "doc": "docker build -t ntdoc . && docker run -d --rm --name ntdoc -p 8080:80 ntdoc && start http://localhost:8083",
-    "stopdoc": "docker stop ntdoc"
+    "stopdoc": "docker stop ntdoc",
+    "publish": "npm publish --access public"
   },
   "keywords": [],
   "author": "",
