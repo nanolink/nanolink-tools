@@ -508,32 +508,43 @@ const Subscriptions: any = {
         deleteVersion
       }
     }`,
-    trips:`subscription trips($opVersion: String) {
-        otrip_trips(opversion: $opVersion, subscribe: true) {
-          type
-          total
-          deleteId
-          data {
-            vID
-            start
-            stop
-            routeDistanceInMeters
-            opVersion
-            startPoint {
-              date
-              longitude
-              latitude
-            } 
-            endPoint {
-              date
-              longitude
-              latitude
-            }
-          }
-          deleteVersion
+    trips: `subscription trips($opVersion: String) {
+      otrip_trips(opversion: $opVersion, subscribe: true) {
+        type
+        total
+        deleteId
+        data {
+          id: vID
+          vID
+          start
+          stop
+          routeDistanceInMeters
+          opVersion
+          referenceGroupId
+          referenceType
+          referenceGroupPath
+          startPoint: startWayPoint {
+            date
+            speed
+            longitude
+            latitude
+          }  
+          endPoint: endWayPoint {
+            date
+            speed
+            longitude
+            latitude
+          } 
+          waypoints {
+            date
+            latitude
+            longitude
+            speed
+          } 
         }
-      }      
-    `
+        deleteVersion
+      }
+    }`
 };
 /**
  * Temporary subscriptions on the coreserver
