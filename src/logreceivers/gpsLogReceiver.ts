@@ -9,6 +9,8 @@ import { LogSubscriptions } from "../definitions/logsubscriptions";
  * @param {Connection} connection - The connection handler
  * @param {String} from - ObjectId to start from. Can be used to get incremental changes
  * @param {String} startFrom - Date and time where the selection should start (RFC 3339) 
+ * @param {String} endAt - Date and time where the selection should end (RFC 3339) 
+ * @param {Number} count - Number of results
  */
 class GPSLogReceiver {
   /**
