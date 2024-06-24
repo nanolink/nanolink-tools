@@ -20,7 +20,7 @@ class GPSLogReceiver {
    */
   private connection: Connection;
   /**
-   * Date/time when the selection should start
+   * ObjectId from where selection should start
    * @date 5/31/2023 - 3:53:43 PM
    *
    * @private
@@ -28,13 +28,22 @@ class GPSLogReceiver {
    */
   private from: String;
   /**
-   * ObjectId from where selection should start
+   * Date/time when the selection should start
    * @date 5/31/2023 - 3:53:43 PM
    *
    * @private
    * @type {String}
    */
   private startFrom: String;
+ 
+  /**
+   * Date/time when the selection should end
+   * @date 5/31/2023 - 3:53:43 PM
+   *  
+   * @private
+   * @type {String}
+   */  
+  private endAt: String;
 
   /**
    * Number of results
@@ -52,11 +61,14 @@ class GPSLogReceiver {
    * @param {Connection} connection - The connection handler
    * @param {String} from - ObjectId to start from. Can be used to get incremental changes
    * @param {String} startFrom - Date and time where the selection should start (RFC 3339) 
+   * @param {String} endAt - Date and time where the selection should end (RFC 3339) 
+   * @param {Number} count - Number of results
    */
-  constructor(connection: Connection, from: String, startFrom: String, count?: Number) {
+  constructor(connection: Connection, from: String, startFrom: String, endAt: String,  count?: Number) {
     this.connection = connection;
     this.from = from;
     this.startFrom = startFrom;
+    this.endAt = endAt;
     this.count = count ?? 100000;
   }
   /**
@@ -70,7 +82,7 @@ class GPSLogReceiver {
   async run(unwind?: boolean) {
     let iter = await this.connection.subscribelog(
       LogSubscriptions.gpsLog,
-      { from: this.from, startFrom: this.startFrom, count: this.count },
+      { from: this.from, startFrom: this.startFrom, endAt: this.endAt, count: this.count },
       unwind
     );
     for await (let r of iter) {

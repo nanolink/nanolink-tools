@@ -303,8 +303,8 @@ const LogSubscriptions = {
    *  Get gps log
    */
   gpsLog: `
-    subscription gpsLog($from: ObjectId, $startFrom: DateTime, $count: Int!) {
-      gps_position(filter: { cursor: { from: $from, count: $count }, start: $startFrom }, subscribe: true, includeInitial: true) {
+    subscription gpsLog($from: ObjectId, $startFrom: DateTime, $endAt: DateTime, $count: Int!) {
+      gps_position(filter: { cursor: { from: $from, count: $count }, start: $startFrom, end: $endAt }, subscribe: true, includeInitial: true) {
         type
         data {
           createdTime
