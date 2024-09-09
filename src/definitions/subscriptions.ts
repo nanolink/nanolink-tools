@@ -100,6 +100,7 @@ const Subscriptions: any = {
                     brandId
                     model
                     modelId
+                    serial
                     modelYear
                     variant
                     variantId
