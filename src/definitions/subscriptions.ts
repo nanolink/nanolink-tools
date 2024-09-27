@@ -101,6 +101,7 @@ const Subscriptions: any = {
                     model
                     modelId
                     serial
+                    description
                     modelYear
                     variant
                     variantId
