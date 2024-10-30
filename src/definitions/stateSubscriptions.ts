@@ -251,5 +251,30 @@ const StateSubscriptions = {
       }
     }
   `,
+  positions: 
+`subscription positions($subscribe: Boolean!, $trackers: [String!], $opversion: String) {
+  otrackers_positionbulk(
+    subscribe: $subscribe
+    opversion: $opversion
+    trackers: $trackers
+  ) {
+    type
+    total
+    deleteId
+    data {
+      trackerVID
+      stamp
+      source
+      longitude
+      latitude
+      accuracy
+      distance
+      rSSI
+      setBy
+      opVersion
+    }
+    deleteVersion
+  }
+}`
 };
 export { StateSubscriptions };
