@@ -2,4 +2,3 @@ node_modules/
 test/
 lib/
 tsconfig-test.json
-package-lock.json

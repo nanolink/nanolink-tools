@@ -1,0 +1,41 @@
+name: Publish to npm
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*.*.*' # Publish only when a new version tag is pushed, e.g., v1.0.0
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20' # Specify the Node.js version you want to use
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Authenticate to npm
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPMTOKEN }}" > ~/.npmrc
+
+      - name: Publish to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPMTOKEN }}
+
+      - name: Bump version and push changes
+        run: |
+          npm version patch # You can use 'patch', 'minor', or 'major' based on your needs
+          git config user.name "GitHub Actions"
+          git config user.email "kk@nanolink.com"
+          git commit -am "Bump version [skip ci]"
+          git push origin main --tags
